@@ -393,7 +393,7 @@ void infosis() {               //INFOSIS
         }
 
 }
-void ayuda(cadena param1, int n){    //terminar de añadir las nuevas funciones              //AYUDA
+void ayuda(cadena param1, int n){    //terminar de añadir las nuevas funciones de la P1             //AYUDA
 
     puts("********************");
     if(n==1 && param1==NULL) {//ayuda general
