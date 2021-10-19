@@ -608,6 +608,18 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
                     perror( error );
                 }else{
                 //*********************************************ALMACENADO******************************+
+                        strcpy(nombres.command,trozos[i]);
+                        if(isEmptyList(ficheros)){
+                            nombres.numcode=0;
+                        }else{
+                            nombres.numcode=getItem(last(ficheros),ficheros).numcode+1;
+                        }
+                        if(strncmp(trozos[i],".",1)!=0 || (hid1 || strncmp(trozos[i],"./",2)==0)){
+                            if(!(insertElement(nombres,LNULL,&ficheros))){
+                                printf(RED "MEMORIA LLENA PARA INTRODUCIR EN LISTA DE FICHEROS\n" COLOR_RESET); 
+                            } 
+                        }
+                        
                     if(S_ISDIR (st->st_mode)){//miramos si es directorio y guardamos en lista de directorios
                         strcpy(nombres.command,trozos[i]);
                         if(isEmptyList(dirs)){
@@ -622,24 +634,6 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
                             }
                         
                      
-                    }else if(S_ISREG (st->st_mode) || S_ISLNK (st->st_mode)){//sino miramos si es un fichero y guardamos en lista de ficheros
-                        strcpy(nombres.command,trozos[i]);
-                        if(isEmptyList(ficheros)){
-                            nombres.numcode=0;
-                        }else{
-                            nombres.numcode=getItem(last(ficheros),ficheros).numcode+1;
-                        }
-                        if(strncmp(trozos[i],".",1)!=0 || (hid1 || strncmp(trozos[i],"./",2)==0)){
-                            if(!(insertElement(nombres,LNULL,&ficheros))){
-                                printf(RED "MEMORIA LLENA PARA INTRODUCIR EN LISTA DE FICHEROS\n" COLOR_RESET); 
-                            } 
-                        }
-                        
-
-
-                    }else{
-                        printf(RED "Lo introducido no es ni fichero ni directorio\n" COLOR_RESET); 
-                                        
                     }
                     //almacenamos para el método no recursivo
                     strcpy(nombres.command,trozos[i]);
@@ -694,7 +688,7 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
                 }   
             }
 
-        }else if(reca1==true && recb1==true){
+        }else if(reca1==true && recb1==true){//no usar M y usar ficheros que al final hacen lo mismo
           printf(RED "No puedes activar -reca y -recb a la vez\n" COLOR_RESET);   
         }else{//caso no reca ni recb
             if (!isEmptyList(M)) {//miramos si el historial esta vacio o no
