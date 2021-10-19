@@ -489,7 +489,7 @@ void borrar(cadena trozos[],int n){
                 }else{
                     puts("********************");
                     perror( error );
-                    printf("-> No se ha podido borrar '%s'\n", trozos[i]);
+                    
                     puts("********************");
                 }
             }else{
@@ -501,7 +501,7 @@ void borrar(cadena trozos[],int n){
                     }else{
                         puts("********************");
                         perror( error );
-                        printf("-> No se ha podido borrar '%s'\n", trozos[i]);
+                        
                         puts("********************");
                     }
                 }else{
