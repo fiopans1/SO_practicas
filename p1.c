@@ -576,7 +576,7 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
     char error[100];
     struct stat *st=malloc(sizeof(struct stat));//preguntar como es que entra memoria ya reservada para st
     bool long1=false, link1=false, acc1=false, reca1=false, recb1=false, hid1=false;
-    tList dirs,ficheros,M;
+    tList dirs,ficheros;
     tItemL nombres, items, Ificheros;
     tPosL p,q;
     DIR *dir;
@@ -588,7 +588,6 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
         getcwd(ruta,MAX_RUTA);
         createList(&ficheros);
         createList(&dirs);
-        createList(&M);
         //hacer lo de la parte anterior de manera bucle
         for(int i=1;i<n && i<MAX_PALABRAS;i++){//nos aseguramos que nunca se pase del numero maximo de palabras
             if(strcmp(trozos[i],"-long")==0){
@@ -635,18 +634,6 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
                         
                      
                     }
-                    //almacenamos para el método no recursivo
-                    strcpy(nombres.command,trozos[i]);
-                    if(isEmptyList(M)){
-                    nombres.numcode=0;
-                    }else{
-                    nombres.numcode=getItem(last(M),M).numcode+1;
-                    }
-                    if(strncmp(trozos[i],".",1)!=0 || (hid1 || strncmp(trozos[i],"./",2)==0)){
-                        if(!(insertElement(nombres,LNULL,&M))){
-                        printf(RED "MEMORIA LLENA PARA INTRODUCIR EN LISTA\n" COLOR_RESET); 
-                        }
-                    }
                    //*********************************************ALMACENADO******************************+
 
                     
@@ -691,11 +678,11 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
         }else if(reca1==true && recb1==true){//no usar M y usar ficheros que al final hacen lo mismo
           printf(RED "No puedes activar -reca y -recb a la vez\n" COLOR_RESET);   
         }else{//caso no reca ni recb
-            if (!isEmptyList(M)) {//miramos si el historial esta vacio o no
-                p = first(M);
+            if (!isEmptyList(ficheros)) {//miramos si el historial esta vacio o no
+                p = first(ficheros);
                 //recorremos la lista monstrando los datos y actualizando contadores
                 while (p != LNULL) {
-                    items = getItem(p, M); 
+                    items = getItem(p, ficheros); 
                     listar_long(acc1,link1,long1,items.command);
                     if(S_ISDIR (st->st_mode)){
                         dir=opendir(items.command);
@@ -723,14 +710,13 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
 
                     }
 
-                    p = next(p, M);
+                    p = next(p, ficheros);
                 }
             }
 
 
         }
         chdir(ruta);
-        deleteList(&M);
         deleteList(&ficheros);
         deleteList(&dirs);
     }
