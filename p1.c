@@ -448,9 +448,13 @@ void crear(cadena trozos[], int n){//declararlo de manera
             printf(RED "Ese directorio ya existe\n" COLOR_RESET);
         }
     }else if(n==3 && strcmp(trozos[1],"-f")==0){
-        fd=open(trozos[2],O_CREAT, 0700);
-        if(fd==-1){
-            perror( error );
+        if(lstat(trozos[2],&st)==-1){
+            fd=open(trozos[2],O_CREAT, 0700);
+            if(fd==-1){
+                perror( error );
+            }
+        }else{
+            printf(RED "Ese fichero ya existe\n" COLOR_RESET);
         }
         /*fd=fopen(trozos[2], "w");//nose si será esta función o otro tipo, mejor preguntar
         if(fd==NULL){
