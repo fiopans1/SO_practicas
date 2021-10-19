@@ -794,7 +794,7 @@ void recura_directorios(bool long1,bool hid1,bool acc1, bool link1,bool reca1,bo
                 createList(&ficheros);
                 createList(&dirs);
                 items = getItem(p, *directorios);
-                listar_long(acc1,link1,long1,items.command);
+                //listar_long(acc1,link1,long1,items.command);
                 printf("+++++++++++++++++++++++++ABRIENDO %s+++++++++++++++++++++++++++++++++\n", items.command);
                 dir=opendir(items.command); 
                     
@@ -811,6 +811,17 @@ void recura_directorios(bool long1,bool hid1,bool acc1, bool link1,bool reca1,bo
                                     perror( error );
                                 }else{
                                     //*********************************************ALMACENADO******************************+
+                                        strcpy(nombres.command,rdir->d_name);
+                                        if(isEmptyList(ficheros)){
+                                            nombres.numcode=0;
+                                        }else{
+                                            nombres.numcode=getItem(last(ficheros),ficheros).numcode+1;
+                                        }
+                                        if(strncmp(rdir->d_name,".",1)!=0 || (hid1 || strncmp(rdir->d_name,"./",2)==0)){
+                                            if(!(insertElement(nombres,LNULL,&ficheros))){
+                                                printf(RED "MEMORIA LLENA PARA INTRODUCIR EN LISTA DE FICHEROS\n" COLOR_RESET); 
+                                            } 
+                                        }
                                     if(S_ISDIR (st->st_mode)){//miramos si es directorio y guardamos en lista de directorios
                                         strcpy(nombres.command,rdir->d_name);
                                         if(isEmptyList(dirs)){
@@ -827,24 +838,7 @@ void recura_directorios(bool long1,bool hid1,bool acc1, bool link1,bool reca1,bo
                                             }
                                         }
                                      
-                                    }else if(S_ISREG (st->st_mode) || S_ISLNK (st->st_mode)){//sino miramos si es un fichero y guardamos en lista de ficheros
-                                        strcpy(nombres.command,rdir->d_name);
-                                        if(isEmptyList(ficheros)){
-                                            nombres.numcode=0;
-                                        }else{
-                                            nombres.numcode=getItem(last(ficheros),ficheros).numcode+1;
-                                        }
-                                        if(strncmp(rdir->d_name,".",1)!=0 || (hid1 || strncmp(rdir->d_name,"./",2)==0)){
-                                            if(!(insertElement(nombres,LNULL,&ficheros))){
-                                                printf(RED "MEMORIA LLENA PARA INTRODUCIR EN LISTA DE FICHEROS\n" COLOR_RESET); 
-                                            } 
-                                        }
-                                        
-
-
-                                    }else{
-                                        printf(RED "Lo introducido no es ni fichero ni directorio\n" COLOR_RESET); 
-                                        
+                                    
                                     }
                                         //*********************************************ALMACENADO******************************+
                                     
