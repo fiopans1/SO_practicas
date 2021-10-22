@@ -458,9 +458,13 @@ void crear(cadena trozos[], int n){//declararlo de manera
             printf(RED "Ese directorio ya existe\n" COLOR_RESET);
         }
     }else if(n==3 && strcmp(trozos[1],"-f")==0){
-        fd=open(trozos[2],O_CREAT, 0700);
-        if(fd==-1){
-            perror( error );
+        if(lstat(trozos[2],&st)==-1){
+            fd=open(trozos[2],O_CREAT, 0700);
+            if(fd==-1){
+                perror( error );
+            }
+        }else{
+            printf(RED "Ese fichero ya existe\n" COLOR_RESET);
         }
         /*fd=fopen(trozos[2], "w");//nose si será esta función o otro tipo, mejor preguntar
         if(fd==NULL){
@@ -495,7 +499,7 @@ void borrar(cadena trozos[],int n){
                 }else{
                     puts("********************");
                     perror( error );
-                    printf("-> No se ha podido borrar '%s'\n", trozos[i]);
+                    
                     puts("********************");
                 }
             }else{
@@ -507,7 +511,7 @@ void borrar(cadena trozos[],int n){
                     }else{
                         puts("********************");
                         perror( error );
-                        printf("-> No se ha podido borrar '%s'\n", trozos[i]);
+                        
                         puts("********************");
                     }
                 }else{
@@ -582,7 +586,7 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
     char error[100];
     struct stat *st=malloc(sizeof(struct stat));//preguntar como es que entra memoria ya reservada para st
     bool long1=false, link1=false, acc1=false, reca1=false, recb1=false, hid1=false;
-    tList dirs,ficheros,M;
+    tList dirs,ficheros;
     tItemL nombres, items, Ificheros;
     tPosL p,q;
     DIR *dir;
@@ -594,7 +598,6 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
         getcwd(ruta,MAX_RUTA);
         createList(&ficheros);
         createList(&dirs);
-        createList(&M);
         //hacer lo de la parte anterior de manera bucle
         for(int i=1;i<n && i<MAX_PALABRAS;i++){//nos aseguramos que nunca se pase del numero maximo de palabras
             if(strcmp(trozos[i],"-long")==0){
@@ -614,6 +617,18 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
                     perror( error );
                 }else{
                 //*********************************************ALMACENADO******************************+
+                        strcpy(nombres.command,trozos[i]);
+                        if(isEmptyList(ficheros)){
+                            nombres.numcode=0;
+                        }else{
+                            nombres.numcode=getItem(last(ficheros),ficheros).numcode+1;
+                        }
+                        if(strncmp(trozos[i],".",1)!=0 || (hid1 || strncmp(trozos[i],"./",2)==0)){
+                            if(!(insertElement(nombres,LNULL,&ficheros))){
+                                printf(RED "MEMORIA LLENA PARA INTRODUCIR EN LISTA DE FICHEROS\n" COLOR_RESET); 
+                            } 
+                        }
+                        
                     if(S_ISDIR (st->st_mode)){//miramos si es directorio y guardamos en lista de directorios
                         strcpy(nombres.command,trozos[i]);
                         if(isEmptyList(dirs)){
@@ -628,36 +643,6 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
                             }
                         
                      
-                    }else if(S_ISREG (st->st_mode) || S_ISLNK (st->st_mode)){//sino miramos si es un fichero y guardamos en lista de ficheros
-                        strcpy(nombres.command,trozos[i]);
-                        if(isEmptyList(ficheros)){
-                            nombres.numcode=0;
-                        }else{
-                            nombres.numcode=getItem(last(ficheros),ficheros).numcode+1;
-                        }
-                        if(strncmp(trozos[i],".",1)!=0 || (hid1 || strncmp(trozos[i],"./",2)==0)){
-                            if(!(insertElement(nombres,LNULL,&ficheros))){
-                                printf(RED "MEMORIA LLENA PARA INTRODUCIR EN LISTA DE FICHEROS\n" COLOR_RESET); 
-                            } 
-                        }
-                        
-
-
-                    }else{
-                        printf(RED "Lo introducido no es ni fichero ni directorio\n" COLOR_RESET); 
-                                        
-                    }
-                    //almacenamos para el método no recursivo
-                    strcpy(nombres.command,trozos[i]);
-                    if(isEmptyList(M)){
-                    nombres.numcode=0;
-                    }else{
-                    nombres.numcode=getItem(last(M),M).numcode+1;
-                    }
-                    if(strncmp(trozos[i],".",1)!=0 || (hid1 || strncmp(trozos[i],"./",2)==0)){
-                        if(!(insertElement(nombres,LNULL,&M))){
-                        printf(RED "MEMORIA LLENA PARA INTRODUCIR EN LISTA\n" COLOR_RESET); 
-                        }
                     }
                    //*********************************************ALMACENADO******************************+
 
@@ -700,14 +685,14 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
                 }   
             }
 
-        }else if(reca1==true && recb1==true){
+        }else if(reca1==true && recb1==true){//no usar M y usar ficheros que al final hacen lo mismo
           printf(RED "No puedes activar -reca y -recb a la vez\n" COLOR_RESET);   
         }else{//caso no reca ni recb
-            if (!isEmptyList(M)) {//miramos si el historial esta vacio o no
-                p = first(M);
+            if (!isEmptyList(ficheros)) {//miramos si el historial esta vacio o no
+                p = first(ficheros);
                 //recorremos la lista monstrando los datos y actualizando contadores
                 while (p != LNULL) {
-                    items = getItem(p, M); 
+                    items = getItem(p, ficheros); 
                     listar_long(acc1,link1,long1,items.command);
                     if(S_ISDIR (st->st_mode)){
                         dir=opendir(items.command);
@@ -735,14 +720,13 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
 
                     }
 
-                    p = next(p, M);
+                    p = next(p, ficheros);
                 }
             }
 
 
         }
         chdir(ruta);
-        deleteList(&M);
         deleteList(&ficheros);
         deleteList(&dirs);
     }
@@ -800,7 +784,7 @@ void recura_directorios(bool long1,bool hid1,bool acc1, bool link1,bool reca1,bo
                 createList(&ficheros);
                 createList(&dirs);
                 items = getItem(p, *directorios);
-                listar_long(acc1,link1,long1,items.command);
+                //listar_long(acc1,link1,long1,items.command);
                 printf("+++++++++++++++++++++++++ABRIENDO %s+++++++++++++++++++++++++++++++++\n", items.command);
                 dir=opendir(items.command); 
                     
@@ -817,6 +801,17 @@ void recura_directorios(bool long1,bool hid1,bool acc1, bool link1,bool reca1,bo
                                     perror( error );
                                 }else{
                                     //*********************************************ALMACENADO******************************+
+                                        strcpy(nombres.command,rdir->d_name);
+                                        if(isEmptyList(ficheros)){
+                                            nombres.numcode=0;
+                                        }else{
+                                            nombres.numcode=getItem(last(ficheros),ficheros).numcode+1;
+                                        }
+                                        if(strncmp(rdir->d_name,".",1)!=0 || (hid1 || strncmp(rdir->d_name,"./",2)==0)){
+                                            if(!(insertElement(nombres,LNULL,&ficheros))){
+                                                printf(RED "MEMORIA LLENA PARA INTRODUCIR EN LISTA DE FICHEROS\n" COLOR_RESET); 
+                                            } 
+                                        }
                                     if(S_ISDIR (st->st_mode)){//miramos si es directorio y guardamos en lista de directorios
                                         strcpy(nombres.command,rdir->d_name);
                                         if(isEmptyList(dirs)){
@@ -833,24 +828,7 @@ void recura_directorios(bool long1,bool hid1,bool acc1, bool link1,bool reca1,bo
                                             }
                                         }
                                      
-                                    }else if(S_ISREG (st->st_mode) || S_ISLNK (st->st_mode)){//sino miramos si es un fichero y guardamos en lista de ficheros
-                                        strcpy(nombres.command,rdir->d_name);
-                                        if(isEmptyList(ficheros)){
-                                            nombres.numcode=0;
-                                        }else{
-                                            nombres.numcode=getItem(last(ficheros),ficheros).numcode+1;
-                                        }
-                                        if(strncmp(rdir->d_name,".",1)!=0 || (hid1 || strncmp(rdir->d_name,"./",2)==0)){
-                                            if(!(insertElement(nombres,LNULL,&ficheros))){
-                                                printf(RED "MEMORIA LLENA PARA INTRODUCIR EN LISTA DE FICHEROS\n" COLOR_RESET); 
-                                            } 
-                                        }
-                                        
-
-
-                                    }else{
-                                        printf(RED "Lo introducido no es ni fichero ni directorio\n" COLOR_RESET); 
-                                        
+                                    
                                     }
                                         //*********************************************ALMACENADO******************************+
                                     
