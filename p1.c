@@ -101,10 +101,9 @@ void imprimirPrompt(){//imprimimos prompt
     printf(GREEN "<user@udcsystem>" COLOR_RESET);
 }
 void leerEntrada(cadena N){//leemos el stdin
-    char error[100];
     fflush(stdin);
     if(fgets(N,200,stdin)==NULL){
-        perror( error );
+        perror( "error" );
     }
     fflush(stdin);
 }
@@ -275,13 +274,12 @@ void pid(cadena param1,int n){                     //PID
     }
 }
 void carpeta(cadena param1,int n){                 //CARPETA
-    char error[100];
 
     if(n==1 && param1==NULL){//obtenemos carpeta
         directorio();
     }else if(n==2){//cambiamos carpeta
         if(chdir(param1)!=0){
-          perror( error );   
+          perror( "error" );   
         }
     }else{
         printf(RED "This command doesn't exist\n" COLOR_RESET);
@@ -289,12 +287,11 @@ void carpeta(cadena param1,int n){                 //CARPETA
 }
 void fecha(cadena param1, int n){                  //FECHA
     time_t tiempo = time(0);
-    char error[100];
     struct tm *tiempolocal;
     char time[50];
     tiempolocal = localtime(&tiempo);
     if(tiempolocal==NULL){
-        perror( error );
+        perror( "error" );
     }else{
         if(n==1 && param1==NULL){//fecha
             strftime(time,50,"%d/%m/%y %H:%M:%S",tiempolocal);
@@ -443,7 +440,6 @@ void ayuda(cadena param1, int n){                  //AYUDA
 
 //P1
 void crear(cadena trozos[], int n){//declararlo de manera 
-    char error[100];
     struct stat st;
     int fd;//puntero que apunta a la direccion del fichero
     //FILE *fd;
@@ -452,7 +448,7 @@ void crear(cadena trozos[], int n){//declararlo de manera
     }else if(n==2 && strcmp(trozos[1],"-f")!=0){
         if(stat(trozos[1], &st)== -1){
             if(mkdir(trozos[1],0700)==-1){//el 0700 es para darle los permisos
-                perror( error );
+                perror( "error" );
             }
         }else{
             printf(RED "Ese directorio ya existe\n" COLOR_RESET);
@@ -461,7 +457,7 @@ void crear(cadena trozos[], int n){//declararlo de manera
         if(lstat(trozos[2],&st)==-1){
             fd=open(trozos[2],O_CREAT, 0700);
             if(fd==-1){
-                perror( error );
+                perror( "error" );
             }
         }else{
             printf(RED "Ese fichero ya existe\n" COLOR_RESET);
@@ -480,7 +476,6 @@ void borrar(cadena trozos[],int n){
         directorio();
     }else if(n>1){
         struct stat *st=malloc(sizeof(struct stat));
-        char error[100];
 
         for(int i=1; i<n && i<MAX_PALABRAS; i++){
             lstat (trozos[i], st);
@@ -498,7 +493,7 @@ void borrar(cadena trozos[],int n){
                     puts("********************");
                 }else{
                     puts("********************");
-                    perror( error );
+                    perror( "error" );
                     
                     puts("********************");
                 }
@@ -510,7 +505,7 @@ void borrar(cadena trozos[],int n){
                         puts("********************");
                     }else{
                         puts("********************");
-                        perror( error );
+                        perror( "error" );
                         
                         puts("********************");
                     }
@@ -531,48 +526,25 @@ void borrar(cadena trozos[],int n){
 }
 void listfich(cadena trozos[],int n){
     //VARIABLES
-    bool long1=false, link1=false, acc1=false;
-    tList M;
-    tItemL nombres, items;
-    tPosL p;
+    bool long1=false, link1=false, acc1=false, anombre=false;
     //CODIGO
     if(n==1){
         directorio();
     }else if(n>1){
-        createList(&M);
         //hacer lo de la parte anterior de manera bucle
         for(int i=1;i<n && i<MAX_PALABRAS;i++){//nos aseguramos que nunca se pase del numero maximo de palabras
-            if(strcmp(trozos[i],"-long")==0){
+            if(strcmp(trozos[i],"-long")==0  && anombre==false){
                 long1=true;
-            }else if(strcmp(trozos[i],"-link")==0){
+            }else if(strcmp(trozos[i],"-link")==0  && anombre==false){
                 link1=true;
-            }else if(strcmp(trozos[i],"-acc")==0){
+            }else if(strcmp(trozos[i],"-acc")==0  && anombre==false){
                 acc1=true;
-            }else{
-
-                strcpy(nombres.command,trozos[i]);
-                if(isEmptyList(M)){
-                    nombres.numcode=0;
-                }else{
-                    nombres.numcode=getItem(last(M),M).numcode+1;
-                }
-                if(!(insertElement(nombres,LNULL,&M))){
-                    printf(RED "MEMORIA LLENA PARA INTRODUCIR EN LISTA\n" COLOR_RESET); 
-                }
+            }else if(strcmp(trozos[i],"-long")!=0 && strcmp(trozos[i],"-link")!=0 && strcmp(trozos[i],"-acc")!=0){
+                anombre=true;
+                listar_long(acc1,link1,long1,trozos[i]);
                     
             }
         }
-            if (!isEmptyList(M)) {//miramos si el historial esta vacio o no
-                p = first(M);
-                //recorremos la lista monstrando los datos y actualizando contadores
-                while (p != LNULL) {
-                    items = getItem(p, M);
-                    listar_long(acc1,link1,long1,items.command);//lista el fichero
-
-                    p = next(p, M);
-                }
-            }
-        deleteList(&M);
         
 
     }else{
@@ -583,9 +555,8 @@ void listfich(cadena trozos[],int n){
 void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y poner lo de reca y recb)
     char ruta[MAX_RUTA];
     char ruta_actual[MAX_RUTA];
-    char error[100];
     struct stat *st=malloc(sizeof(struct stat));//preguntar como es que entra memoria ya reservada para st
-    bool long1=false, link1=false, acc1=false, reca1=false, recb1=false, hid1=false;
+    bool long1=false, link1=false, acc1=false, reca1=false, recb1=false, hid1=false, anombre=false;
     tList dirs,ficheros;
     tItemL nombres, items, Ificheros;
     tPosL p,q;
@@ -600,21 +571,22 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
         createList(&dirs);
         //hacer lo de la parte anterior de manera bucle
         for(int i=1;i<n && i<MAX_PALABRAS;i++){//nos aseguramos que nunca se pase del numero maximo de palabras
-            if(strcmp(trozos[i],"-long")==0){
+            if(strcmp(trozos[i],"-long")==0 && anombre==false){
                 long1=true;
-            }else if(strcmp(trozos[i],"-link")==0){
+            }else if(strcmp(trozos[i],"-link")==0  && anombre==false){
                 link1=true;
-            }else if(strcmp(trozos[i],"-acc")==0){
+            }else if(strcmp(trozos[i],"-acc")==0  && anombre==false){
                 acc1=true;
-            }else if(strcmp(trozos[i],"-reca")==0){
+            }else if(strcmp(trozos[i],"-reca")==0  && anombre==false){
                 reca1=true;
-            }else if(strcmp(trozos[i],"-recb")==0){
+            }else if(strcmp(trozos[i],"-recb")==0  && anombre==false){
                 recb1=true;
-            }else if(strcmp(trozos[i],"-hid")==0){
+            }else if(strcmp(trozos[i],"-hid")==0  && anombre==false){
                 hid1=true;
-            }else{
+            }else if(strcmp(trozos[i],"-long")!=0 && strcmp(trozos[i],"-link")!=0 && strcmp(trozos[i],"-acc")!=0 && strcmp(trozos[i],"-reca")!=0 && strcmp(trozos[i],"-recb")!=0 && strcmp(trozos[i],"-hid")!=0){
+                anombre=true;
                 if(lstat(trozos[i],st)==-1){
-                    perror( error );
+                    perror( "error" );
                 }else{
                 //*********************************************ALMACENADO******************************+
                         strcpy(nombres.command,trozos[i]);
@@ -702,7 +674,7 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
                         if(chdir(ruta_actual)==0){
                             printf("+++++++++++++++++++++++++ABRIENDO %s+++++++++++++++++++++++++++++++++\n", items.command);
                             if(dir==NULL){
-                                perror( error );
+                                perror( "error" );
                             }else{
 
                             while((rdir = readdir(dir)) != NULL){
@@ -735,7 +707,6 @@ void listdir(cadena trozos[],int n){//hacer que funcione -hid y dejarlo bonito(y
     
 }
 void borrar_rec(cadena trozos[],int n){
-    char error[200];
     struct stat *st=malloc(sizeof(struct stat));
 
     if(n==1){
@@ -743,7 +714,7 @@ void borrar_rec(cadena trozos[],int n){
     }else if(n>1){
         for(int i=1; i<n && i<MAX_PALABRAS;i++){
             if(lstat(trozos[i],st)==-1){
-                perror( error );
+                perror( "error" );
             }else{
                 if(S_ISDIR (st->st_mode)){
                     if(strncmp(trozos[i],".\0",2)!=0 && strncmp(trozos[i],"..\0",3)!=0){
@@ -751,7 +722,7 @@ void borrar_rec(cadena trozos[],int n){
                     }
                 }else if(S_ISREG (st->st_mode) || S_ISLNK (st->st_mode)){
                     if(unlink(trozos[i])!=0){
-                        perror( error );
+                        perror( "error" );
                     }
                 }else{
 
@@ -766,7 +737,6 @@ void borrar_rec(cadena trozos[],int n){
 //FUNCIONES AUXILIARES
 void recura_directorios(bool long1,bool hid1,bool acc1, bool link1,bool reca1,bool recb1, tList *directorios){//POÑER BEN O MOSTRAR(A RECURSIVIDAD FUNCION BEN)
     //VARIABLES
-    char error[200];
     //char ruta_actual[MAX_RUTA];
     char ruta[MAX_RUTA];//sino para recorrer recursivamente el directorio dirá que no lo encuentra
     DIR *dir;
@@ -789,7 +759,7 @@ void recura_directorios(bool long1,bool hid1,bool acc1, bool link1,bool reca1,bo
                 dir=opendir(items.command); 
                     
                     if(dir==NULL){
-                        perror( error );
+                        perror( "error" );
                     }else{
 
                         if(chdir(items.command) == 0){
@@ -798,7 +768,7 @@ void recura_directorios(bool long1,bool hid1,bool acc1, bool link1,bool reca1,bo
                             if(strncmp(rdir->d_name,".\0",2)!=0 && strncmp(rdir->d_name,"..\0",3)!=0){
 
                                 if(lstat(rdir->d_name,st)==-1){
-                                    perror( error );
+                                    perror( "error" );
                                 }else{
                                     //*********************************************ALMACENADO******************************+
                                         strcpy(nombres.command,rdir->d_name);
@@ -886,9 +856,8 @@ void recura_directorios(bool long1,bool hid1,bool acc1, bool link1,bool reca1,bo
 }
 void directorio(){//lista directorio actual
     char dir[200];
-    char error[100];
     if(getcwd(dir, sizeof(dir))==NULL){
-        perror( error );  
+        perror( "error" );  
     }else{
         printf(BLUE "%s\n", dir);
     }    
@@ -938,7 +907,6 @@ if (m&S_ISVTX) permisos[9]='t';
 return (permisos);
 }
 void listar_long(bool acc1, bool link1,bool long1, cadena name){//lista datos del directorio
-    char error[100];
     struct stat *st=malloc(sizeof(struct stat));//preguntar como es que entra memoria ya reservada para st
     struct tm *fecha;
     struct passwd *usr;
@@ -948,7 +916,7 @@ void listar_long(bool acc1, bool link1,bool long1, cadena name){//lista datos de
     char* perm;
     if(long1){
         if(lstat(name,st)==-1){
-            perror( error );
+            perror( "error" );
         }else{
     
             usr=getpwuid(st->st_uid);
@@ -972,21 +940,21 @@ void listar_long(bool acc1, bool link1,bool long1, cadena name){//lista datos de
                             if(readlink(name,link,200)!=-1){
                                 printf("-> %s",link);
                             }else{
-                                perror( error );
+                                perror( "error" );
                             }
                         }
                     } 
                 }else{
-                    perror( error );
+                    perror( "error" );
                 }
             }else{
-                perror( error );
+                perror( "error" );
             }  
         printf("\n");
         }
     }else{
         if(lstat(name,st)==-1){
-            perror( error );
+            perror( "error" );
         }else{
             printf("%ld %s\n",st->st_size ,name);
         }
@@ -995,7 +963,6 @@ void listar_long(bool acc1, bool link1,bool long1, cadena name){//lista datos de
     free(st);
 }
 void borrar1_directorios(cadena directorio){
-    char error[200];
     //char ruta_actual[MAX_RUTA];
     char ruta[MAX_RUTA];//sino para recorrer recursivamente el directorio dirá que no lo encuentra
     DIR *dir;
@@ -1004,13 +971,13 @@ void borrar1_directorios(cadena directorio){
     getcwd(ruta,MAX_RUTA);
     dir= opendir(directorio);
     if(dir==NULL){
-        perror( error );
+        perror( "error" );
     }else{
         if(chdir(directorio)==0){
             while((rdir=readdir(dir))!=NULL){
                 if(strncmp(rdir->d_name,".\0",2)!=0 && strncmp(rdir->d_name,"..\0",3)!=0){
                     if(lstat(rdir->d_name,st)==-1){
-                        perror( error );
+                        perror( "error" );
                     }else{
                         if(S_ISDIR (st->st_mode)){
                             if(strncmp(rdir->d_name,".\0",2)!=0 && strncmp(rdir->d_name,"..\0",3)!=0){
@@ -1020,7 +987,7 @@ void borrar1_directorios(cadena directorio){
 
                         }else if(S_ISREG (st->st_mode) || S_ISLNK (st->st_mode)){
                             if(unlink(rdir->d_name)!=0){
-                                perror( error );
+                                perror( "error" );
                             }
                         }else{
 
@@ -1031,11 +998,11 @@ void borrar1_directorios(cadena directorio){
             }
             chdir(ruta);
             if(rmdir(directorio)!=0){
-                perror( error );
+                perror( "error" );
             }
             closedir(dir);
         }else{
-            perror( error );
+            perror( "error" );
         }
     }
     chdir(ruta);
