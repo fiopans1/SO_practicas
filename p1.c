@@ -393,12 +393,13 @@ void infosis() {               //INFOSIS
         }
 
 }
-void ayuda(cadena param1, int n){    //terminar de añadir las nuevas funciones de la P1             //AYUDA
+void ayuda(cadena param1, int n){                  //AYUDA
 
     puts("********************");
     if(n==1 && param1==NULL) {//ayuda general
 
-       puts("->'ayuda [cmd]' donde cmd es uno de los siguientes comandos:\nfin\tsalir\tbye\tcarpeta\tpid\n\nautores\thist\tcomando\tfecha\ninfosis\tayuda");
+       puts("->'ayuda [cmd]' donde cmd es uno de los siguientes comandos:\n- fin\t\t- salir\n- bye\t\t- carpeta\n- pid\t\t- autores\n- hist\t\t- comando\n- fecha\t\t- infosis");
+       puts("- ayuda\t\t- crear\n- borrar\t- borrarrec\n- listfich\t- listdir");
 
     }else if(n==2){//ayuda especifico
         if(strcmp(param1,"autores")==0){
@@ -420,7 +421,16 @@ void ayuda(cadena param1, int n){    //terminar de añadir las nuevas funciones 
             printf("ayuda [cmd]	Muestra ayuda sobre los comandos\n");
         }else if(strcmp(param1,"salir")==0 || strcmp(param1,"fin")==0 || strcmp(param1,"bye")==0){
             printf("bye/salir/fin 	Termina la ejecucion del shell\n");
-
+        }else if(strcmp(param1,"crear")==0){
+            printf("crear [-f] [name]	 Crea un fichero o directorio\n");
+        }else if(strcmp(param1,"listfich")==0){
+            printf("listfich [-long][-link][-acc] n1 n2 ..	lista ficheros\n");
+        }else if(strcmp(param1,"listdir")==0){
+            printf("listdir [-reca] [-recb] [-hid][-long][-link][-acc] n1 n2 ..	lista ficheros contenidos de directorios\n");
+        }else if(strcmp(param1,"borrar")==0){
+            printf("borrar [name1 name2 ..]	 Borra ficheros o directorios vacios\n");
+        }else if(strcmp(param1,"borrarrec")==0){
+            printf("borrarrec [name1 name2 ..]	 Borra ficheros o directorios no vacios\n");
         }else{
             printf(RED "This command doesn't exist\n" COLOR_RESET);
         }
