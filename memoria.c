@@ -5,9 +5,9 @@ void malloc1(cadena trozos,int n){
     tItemM items;
     long int tam;
     if(n==2){
-    tam= trozos[1];
+    tam=(long int) atoi(trozos[1]);
     items.dir_malloc=malloc(tam);
-    
+
         
 
     }  
