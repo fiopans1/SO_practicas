@@ -27,6 +27,7 @@
 #include <pwd.h>
 #include <grp.h>
 #include <dirent.h>
+#include "memoria.h"
 
 //
 //TIPOS DE DATOS Y VARIABLES
@@ -38,6 +39,7 @@
 typedef char *cadena;
 #define MAX_PALABRAS 200
 #define MAX_RUTA 256
+#define LEERCOMPLETO ((ssize_t)-1)
 
 //CABECERAS P0
 void imprimirPrompt();
