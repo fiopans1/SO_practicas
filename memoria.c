@@ -1,15 +1,27 @@
 #include "memoria.h"
 
 //MEMORIA:
-void malloc1(cadena trozos,int n){
+void malloc1(cadena trozos,int n,tListM *M){
     tItemM items;
     long int tam;
-    if(n==2){
-    tam=(long int) atoi(trozos[1]);
-    items.dir_malloc=malloc(tam);
+    if(n==1){
+        //imprime a lista
+    
+    }else if(n==2){
+        tam=(long int) atoi(trozos[1]);
+        items.dir_malloc=malloc(tam);
+        strcpy(items.nome_ficheiro,"");
+        items.tipo=MALLOC;
+        items.key=0;
+        //items.hora=asignar hora
+        insertItemM(items,NULL,M);
+        printf("allocated %ld at %s", items.tam,items.hora);
 
-        
 
+    }else if(n==3){
+        //facer o free
+    }else{
+        printf(RED "Opciones no validas para malloc\n" COLOR_RESET); 
     }  
 }
 

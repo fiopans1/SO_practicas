@@ -41,7 +41,7 @@ void createEmptyListM (tListM*);
 bool insertItemM(tItemM, tPosM, tListM*);
 void updateItemM(tItemM, tPosM, tListM*);
 void deleteAtPositionM(tPosM, tListM*);
-tPosM findItemM(void*, tListM);
+tPosM findtamM(unsigned long int, tListM);
 bool isEmptyListM(tListM);
 tItemM getItemM(tPosM, tListM);
 tPosM firstM(tListM);

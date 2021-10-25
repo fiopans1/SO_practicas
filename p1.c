@@ -44,7 +44,7 @@ typedef char *cadena;
 //CABECERAS P0
 void imprimirPrompt();
 void leerEntrada(cadena N);
-void procesarEntrada(cadena N,tList *L);
+void procesarEntrada(cadena N,tList *L,tList *M);
 void readtask();
 void crearfichero();
 void autores(cadena param1, int n);
@@ -84,7 +84,9 @@ void readtask(){//funcion general
     bool terminado;
     cadena N;
     tList L;
+    tListM M;
     createList(&L);
+    createEmptyList(&M);
     //reservamos memoria para N
     N=malloc(200*sizeof(char));
     terminado=false;
@@ -92,7 +94,7 @@ void readtask(){//funcion general
     while(!terminado){
         imprimirPrompt();
         leerEntrada(N);
-        procesarEntrada(N, &L);
+        procesarEntrada(N, &L, &M);
     }
     free(N);
     }else{
@@ -109,7 +111,7 @@ void leerEntrada(cadena N){//leemos el stdin
     }
     fflush(stdin);
 }
-void procesarEntrada(cadena N, tList *L){//procesamos la entrada
+void procesarEntrada(cadena N, tList *L,tList *M){//procesamos la entrada
     //COSAS DE LISTA Y VARIABLES
     tItemL informacion;
     char *trozos[MAX_PALABRAS];//reservamos memoria par 200 palabras, si se introducen mas de 200 el programa peta
@@ -1002,7 +1004,7 @@ void borrar1_directorios(cadena directorio){
             if(rmdir(directorio)!=0){
                 perror( "error" );
             }
-            closedir(dir);
+            closedir(dir);//revisar si cambiar donde ponerlo
         }else{
             perror( "error" );
         }

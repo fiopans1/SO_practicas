@@ -45,11 +45,11 @@ bool insertItemM(tItemM d, tPosM p, tListM* L){
 void updateItemM(tItemM d, tPosM p, tListM* L ){
     p->data=d;
 }
-tPosM findItemM(void* d, tListM L){
+tPosM findtamM(unsigned long int tam, tListM L){
 
     //declaramos la variable "p" que recorrerá la lista
     tPosM p;
-    for(p=L;(p!=NULL) && (strcmp(p->data.dir_malloc,d)!=0);p=p->next);
+    for(p=L;(p!=NULL) && (p->data.tam==tam) && (p->data.tipo=MALLOC);p=p->next);
     return p;
 
 }
