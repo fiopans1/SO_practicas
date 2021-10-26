@@ -33,6 +33,7 @@ typedef char *cadena;
 
 //definicion de funcines:
 void malloc1(cadena trozos,int n,tListM *M);
-
-
+//funciones secundarias:
+void obt_hora(char hora[])
+;
 #endif

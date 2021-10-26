@@ -103,3 +103,12 @@ void deleteAtPositionM(tPosM p, tListM *L){
     free(p);
 }
 
+void imprimir_malloc(tListM M){
+
+    for(tPosM p; p!=NULL; p=nextM(p,M)){
+        if(p->data.tipo==MALLOC){
+            printf("%p: size:%ld. malloc %s",p->data.dir_malloc,p->data.tam,p->data.hora);
+        }
+    }
+}
+

@@ -5,17 +5,21 @@ void malloc1(cadena trozos,int n,tListM *M){
     tItemM items;
     long int tam;
     if(n==1){
-        //imprime a lista
+        imprimir_malloc(M);
     
     }else if(n==2){
-        tam=(long int) atoi(trozos[1]);
+        tam=(long int) strtol(trozos[1], NULL, 10);
         items.dir_malloc=malloc(tam);
+        if(items.dir_malloc==NULL){
+            printf("No se pudo reservar memoria");
+        }else{
         strcpy(items.nome_ficheiro,"");
         items.tipo=MALLOC;
         items.key=0;
-        //items.hora=asignar hora
+        obt_hora(items.hora);
         insertItemM(items,NULL,M);
         printf("allocated %ld at %s", items.tam,items.hora);
+        }
 
 
     }else if(n==3){
@@ -166,4 +170,15 @@ void dopmap (void){ /*no arguments necessary*/
         exit(1);
     }
     waitpid (pid,NULL,0);
+}
+
+
+//FUNCIONES AUXILIARES
+
+
+
+void obt_hora(char hora[]){
+    time_t now;
+    time(&now);
+    strcpy(hora,ctime(&now));
 }
