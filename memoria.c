@@ -1,13 +1,14 @@
 #include "memoria.h"
 
 //MEMORIA:
-void malloc1(cadena trozos,int n,tListM *M){
+void malloc1(cadena trozos[],int n,tListM *M){
     tItemM items;
     long int tam;
     if(n==1){
         //imprime a lista
     
     }else if(n==2){
+        if(isNumber2(trozos[1])){
         tam=(long int) atoi(trozos[1]);
         items.dir_malloc=malloc(tam);
         strcpy(items.nome_ficheiro,"");
@@ -16,10 +17,14 @@ void malloc1(cadena trozos,int n,tListM *M){
         //items.hora=asignar hora
         insertItemM(items,NULL,M);
         printf("allocated %ld at %s", items.tam,items.hora);
+        }else{
+            printf(RED "Valor no valido\n" COLOR_RESET); 
+        }
 
 
-    }else if(n==3){
-        //facer o free
+    }else if(n==3 && strcmp(trozos[2],"-free")==0){
+
+        
     }else{
         printf(RED "Opciones no validas para malloc\n" COLOR_RESET); 
     }  
@@ -166,4 +171,25 @@ void dopmap (void){ /*no arguments necessary*/
         exit(1);
     }
     waitpid (pid,NULL,0);
+}
+
+
+
+
+
+
+
+//funciones auxiliares:
+bool isNumber2(cadena param1) {//funcion para comprobar si una cadena es un numero
+    int cnt=0;
+    for(int i=0; i<strlen(param1); i++){
+        if (isdigit(param1[i]))
+            cnt++;
+    }
+    if(cnt == strlen(param1)) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }

@@ -32,7 +32,11 @@ typedef char *cadena;
 
 
 //definicion de funcines:
-void malloc1(cadena trozos,int n,tListM *M);
+void malloc1(cadena trozos[],int n,tListM *M);
+
+//funciones auxiliares
+bool isNumber2(cadena param1);
+
 
 
 #endif
