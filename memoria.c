@@ -5,20 +5,30 @@ void malloc1(cadena trozos[],int n,tListM *M){
     tItemM items;
     long int tam;
     if(n==1){
-        //imprime a lista
+        imprimir_malloc(M);
     
     }else if(n==2){
+<<<<<<< HEAD
         if(isNumber2(trozos[1])){
         tam=(long int) atoi(trozos[1]);
+=======
+        tam=(long int) strtol(trozos[1], NULL, 10);
+>>>>>>> 5ec132c7132442ccbc8b7d504425ec186ac8d210
         items.dir_malloc=malloc(tam);
+        if(items.dir_malloc==NULL){
+            printf("No se pudo reservar memoria");
+        }else{
         strcpy(items.nome_ficheiro,"");
         items.tipo=MALLOC;
         items.key=0;
-        //items.hora=asignar hora
+        obt_hora(items.hora);
         insertItemM(items,NULL,M);
         printf("allocated %ld at %s", items.tam,items.hora);
+<<<<<<< HEAD
         }else{
             printf(RED "Valor no valido\n" COLOR_RESET); 
+=======
+>>>>>>> 5ec132c7132442ccbc8b7d504425ec186ac8d210
         }
 
 
@@ -174,6 +184,7 @@ void dopmap (void){ /*no arguments necessary*/
 }
 
 
+<<<<<<< HEAD
 
 
 
@@ -192,4 +203,14 @@ bool isNumber2(cadena param1) {//funcion para comprobar si una cadena es un nume
     else {
         return false;
     }
+=======
+//FUNCIONES AUXILIARES
+
+
+
+void obt_hora(char hora[]){
+    time_t now;
+    time(&now);
+    strcpy(hora,ctime(&now));
+>>>>>>> 5ec132c7132442ccbc8b7d504425ec186ac8d210
 }

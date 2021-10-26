@@ -53,7 +53,11 @@ void carpeta(cadena param1, int n);
 void fecha(cadena param1, int n);
 void infosis();
 void hist(cadena param1, tList *L, int n);
+<<<<<<< HEAD
 void comandoN(cadena param1,tList L, int n, tListM *M);
+=======
+void comandoN(cadena param1,tList L, int n,tListM *M);
+>>>>>>> 5ec132c7132442ccbc8b7d504425ec186ac8d210
 void ayuda(cadena param1, int n);
 int TrocearCadena(char * cadena, char * trozos[]);
 //CABECERAS P1
@@ -181,9 +185,15 @@ void procesarEntrada(cadena N, tList *L,tListM *M){//procesamos la entrada
                 }
             }else if(strcmp(trozos[0],"comando")==0){ //COMANDO
                 if(n==2){
+<<<<<<< HEAD
                     comandoN(trozos[1],*L,n,M);
                 }else if(n==1){
                     comandoN(NULL,*L,n,M);
+=======
+                    comandoN(trozos[1],*L,n, M);
+                }else if(n==1){
+                    comandoN(NULL,*L,n, M);
+>>>>>>> 5ec132c7132442ccbc8b7d504425ec186ac8d210
                 }else{
                    printf(RED "This command doesn't exist\n" COLOR_RESET); 
                 }
@@ -358,7 +368,11 @@ void hist(cadena param1, tList *L, int z) {        //HIST
     }
     puts("********************");
 }
+<<<<<<< HEAD
 void comandoN(cadena param1,tList L, int z, tListM *M){       //COMANDO N
+=======
+void comandoN(cadena param1,tList L, int z,tListM *M){       //COMANDO N
+>>>>>>> 5ec132c7132442ccbc8b7d504425ec186ac8d210
     if(z==2 && isNumber(param1)){//comando N
     //tPosL p;
     tItemL items;
@@ -369,7 +383,11 @@ void comandoN(cadena param1,tList L, int z, tListM *M){       //COMANDO N
         if(pos!=LNULL){
             items= getItem(pos,L);
             printf("%d - %s\n", items.numcode, items.command);
+<<<<<<< HEAD
             procesarEntrada(items.command, &L, M);
+=======
+            procesarEntrada(items.command, &L,M);
+>>>>>>> 5ec132c7132442ccbc8b7d504425ec186ac8d210
         }else{
             printf(RED "-> No se encontro el comando en el historial\n" COLOR_RESET);
         }
