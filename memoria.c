@@ -1,13 +1,14 @@
 #include "memoria.h"
 
 //MEMORIA:
-void malloc1(cadena trozos,int n,tListM *M){
+void malloc1(cadena trozos[],int n,tListM *M){
     tItemM items;
     long int tam;
     if(n==1){
-        imprimir_malloc(M);
+        imprimir_malloc(*M);
     
     }else if(n==2){
+        if(isNumber2(trozos[1])){
         tam=(long int) strtol(trozos[1], NULL, 10);
         items.dir_malloc=malloc(tam);
         if(items.dir_malloc==NULL){
@@ -20,9 +21,12 @@ void malloc1(cadena trozos,int n,tListM *M){
         insertItemM(items,NULL,M);
         printf("allocated %ld at %s", items.tam,items.hora);
         }
+        }else{
+            printf(RED "Valor no valido\n" COLOR_RESET);
+        }
 
 
-    }else if(n==3){
+    }else if(n==3 && strcmp(trozos[1], "-free")==0){
         //facer o free
     }else{
         printf(RED "Opciones no validas para malloc\n" COLOR_RESET); 
@@ -180,4 +184,18 @@ void obt_hora(char hora[]){
     time_t now;
     time(&now);
     strcpy(hora,ctime(&now));
+}
+bool isNumber2(cadena param1) {//funcion para comprobar si una cadena es un numero
+    int cnt=0;
+    for(int i=0; i<strlen(param1); i++){
+        if (isdigit(param1[i]))
+            cnt++;
+    }
+    if(cnt == strlen(param1)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+
 }

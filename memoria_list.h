@@ -49,5 +49,6 @@ tPosM lastM(tListM);
 tPosM previousM(tPosM, tListM);
 tPosM nextM(tPosM, tListM);
 bool createNodeM(tPosM *p);
+void imprimir_malloc(tListM M);
 
 #endif

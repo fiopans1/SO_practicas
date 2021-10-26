@@ -32,7 +32,8 @@ typedef char *cadena;
 
 
 //definicion de funcines:
-void malloc1(cadena trozos,int n,tListM *M);
+void malloc1(cadena trozos[],int n,tListM *M);
 //funciones secundarias:
 void obt_hora(char hora[]);
+bool isNumber2(cadena param1); 
 #endif
