@@ -3,7 +3,8 @@
 //MEMORIA:
 void malloc1(cadena trozos[],int n,tListM *M){
     tItemM items;
-    long int tam;
+    tPosM pos;
+    unsigned long int tam;
     if(n==1){
         imprimir_malloc(*M);
     
@@ -12,14 +13,15 @@ void malloc1(cadena trozos[],int n,tListM *M){
         tam=(long int) strtol(trozos[1], NULL, 10);
         items.dir_malloc=malloc(tam);
         if(items.dir_malloc==NULL){
-            printf("No se pudo reservar memoria");
+            printf("No se pudo reservar memoria\n");
         }else{
         strcpy(items.nome_ficheiro,"");
         items.tipo=MALLOC;
         items.key=0;
+        items.tam=tam;
         obt_hora(items.hora);
         insertItemM(items,NULL,M);
-        printf("allocated %ld at %s", items.tam,items.hora);
+        printf("allocated %ld at %p\n", items.tam,items.dir_malloc);
         }
         }else{
             printf(RED "Valor no valido\n" COLOR_RESET);
@@ -27,7 +29,20 @@ void malloc1(cadena trozos[],int n,tListM *M){
 
 
     }else if(n==3 && strcmp(trozos[1], "-free")==0){
-        //facer o free
+        if(isNumber2(trozos[2])){
+            tam=(long int) strtol(trozos[2], NULL, 10);
+            pos=findtamM(tam, *M);
+            if(pos!=NULL){
+                items=getItemM(pos,*M);
+                free(items.dir_malloc);
+                printf("deallocated %ld at %p\n",items.tam, items.dir_malloc);
+                deleteAtPositionM(pos,M);
+            }else{
+                printf(RED "Tamaño no encontrado\n" COLOR_RESET);
+            }
+        }else{
+           printf(RED "Valor no valido\n" COLOR_RESET); 
+        }
     }else{
         printf(RED "Opciones no validas para malloc\n" COLOR_RESET); 
     }  

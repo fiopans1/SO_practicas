@@ -21,6 +21,8 @@
 #include <sys/shm.h>
 #include <sys/mman.h>
 #include "memoria_list.h"
+#include <sys/wait.h>
+
 
 
 #define RED "\x1b[31m"

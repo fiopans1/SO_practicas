@@ -45,14 +45,6 @@ bool insertItemM(tItemM d, tPosM p, tListM* L){
 void updateItemM(tItemM d, tPosM p, tListM* L ){
     p->data=d;
 }
-tPosM findtamM(unsigned long int tam, tListM L){
-
-    //declaramos la variable "p" que recorrerá la lista
-    tPosM p;
-    for(p=L;(p!=NULL) && (p->data.tam==tam) && (p->data.tipo=MALLOC);p=p->next);
-    return p;
-
-}
 
 bool isEmptyListM(tListM L){
     return(L==LNULL);
@@ -102,12 +94,37 @@ void deleteAtPositionM(tPosM p, tListM *L){
     //liberaramos la variable
     free(p);
 }
+void deleteListM(tListM *L){
+    tPosM p;
+    while(*L != LNULL) {
+        p = *L;
+        *L = (*L)->next;
+        free(p);
+    }
+}
+//funciones especificas:
+tPosM findtamM(unsigned long int tam, tListM L){
+
+    //declaramos la variable "p" que recorrerá la lista
+    tItemM item;
+    tPosM p;
+    for(p=L;(p!=NULL);p=p->next){
+        item=getItemM(p,L);
+        if(item.tam==tam && item.tipo==MALLOC){
+            return p;
+        }
+    }
+    
+    return p;
+
+}
 
 void imprimir_malloc(tListM M){
-
-    for(tPosM p; p!=NULL; p=nextM(p,M)){
-        if(p->data.tipo==MALLOC){
-            printf("%p: size:%ld. malloc %s",p->data.dir_malloc,p->data.tam,p->data.hora);
+    tItemM item;
+    for(tPosM p=M; p!=NULL; p=nextM(p,M)){
+        item=getItemM(p,M);
+        if(item.tipo==MALLOC){
+            printf("%p: size:%ld. malloc %s\n",item.dir_malloc,item.tam,item.hora);
         }
     }
 }

@@ -9,7 +9,7 @@
 
 #ifndef __MEMORIA_H_
 #define __MEMORIA_H_
-
+#include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -49,6 +49,7 @@ tPosM lastM(tListM);
 tPosM previousM(tPosM, tListM);
 tPosM nextM(tPosM, tListM);
 bool createNodeM(tPosM *p);
+void deleteListM(tListM *L);
 void imprimir_malloc(tListM M);
 
 #endif

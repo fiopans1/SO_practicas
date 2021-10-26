@@ -203,10 +203,16 @@ void procesarEntrada(cadena N, tList *L,tListM *M){//procesamos la entrada
                    printf(RED "This command doesn't exist\n" COLOR_RESET); 
                 }
             }else if(strcmp(trozos[0],"salir")==0 || strcmp(trozos[0],"fin")==0 || strcmp(trozos[0],"bye")==0){ //SALIR
+                for(tPosM p=*M; p!=NULL;p=nextM(p,*M)){
+                    if(p->data.tipo==MALLOC){
+                        free(p->data.dir_malloc);
+                    }//añadir caso mmap y caso share
+                }
                 for(int i=0;i<n;i++){
                     free(trozos[i]);
                 }
                 deleteList(L);
+                deleteListM(M);
                 exit(1);
             }else if(strcmp(trozos[0],"crear")==0){
                 crear(trozos,n);
@@ -219,6 +225,15 @@ void procesarEntrada(cadena N, tList *L,tListM *M){//procesamos la entrada
                 listfich(trozos,n);
             }else if(strcmp(trozos[0],"listdir")==0){
                 listdir(trozos,n);
+            }else if(strcmp(trozos[0],"malloc")==0){
+                malloc1(trozos,n,M);
+            }else if(strcmp(trozos[0],"mmap")==0){
+            //rellenar
+            }else if(strcmp(trozos[0],"shared")==0){
+            //rellenar
+            
+            
+            
             }else{
                 printf(RED "This command doesn't exist\n" COLOR_RESET);
             }
