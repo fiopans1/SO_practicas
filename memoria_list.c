@@ -118,6 +118,52 @@ tPosM findtamM(unsigned long int tam, tListM L){
     return p;
 
 }
+tPosM findkeyM(int key, tListM L){
+
+    //declaramos la variable "p" que recorrerá la lista
+    tItemM item;
+    tPosM p;
+    for(p=L;(p!=NULL);p=p->next){
+        item=getItemM(p,L);
+        if(item.key==key && item.tipo==SHARED){
+            return p;
+        }
+    }
+    
+    return p;
+
+}
+
+tPosM findfichM(char fich[], tListM L){
+
+    //declaramos la variable "p" que recorrerá la lista
+    tItemM item;
+    tPosM p;
+    for(p=L;(p!=NULL);p=p->next){
+        item=getItemM(p,L);
+        if(strcmp(item.nome_ficheiro,fich)==0 && item.tipo==MMAP){
+            return p;
+        }
+    }
+    
+    return p;
+
+}
+tPosM finddirM(void *dir, tListM L){
+
+    //declaramos la variable "p" que recorrerá la lista
+    tItemM item;
+    tPosM p;
+    for(p=L;(p!=NULL);p=p->next){
+        item=getItemM(p,L);
+        if(item.dir_malloc==dir){
+            return p;
+        }
+    }
+    
+    return p;
+
+}
 
 void imprimir_malloc(tListM M){
     tItemM item;
@@ -128,4 +174,35 @@ void imprimir_malloc(tListM M){
         }
     }
 }
+void imprimir_shared(tListM M){
+    tItemM item;
+    for(tPosM p=M; p!=NULL; p=nextM(p,M)){
+        item=getItemM(p,M);
+        if(item.tipo==SHARED){
+            printf("%p: size:%ld. shared memory (fd:%d) %s\n",item.dir_malloc,item.tam,item.key,item.hora);
+        }
+    }
+}
+void imprimir_mmap(tListM M){
+    tItemM item;
+    for(tPosM p=M; p!=NULL; p=nextM(p,M)){
+        item=getItemM(p,M);
+        if(item.tipo==MMAP){
+            printf("%p: size:%ld. mmap %s (fd:%d) %s\n",item.dir_malloc,item.tam,item.nome_ficheiro,item.key,item.hora);
+        }
+    }
+}
+void imprimir_listacompleta(tListM M){
+        tItemM item;
+    for(tPosM p=M; p!=NULL; p=nextM(p,M)){
+        item=getItemM(p,M);
+        if(item.tipo==MALLOC){
+            printf("%p: size:%ld. mmap %s (fd:%d) %s\n",item.dir_malloc,item.tam,item.nome_ficheiro,item.key,item.hora);
+        }else if(item.tipo==SHARED){
+            printf("%p: size:%ld. shared memory (fd:%d) %s\n",item.dir_malloc,item.tam,item.key,item.hora);
+        }else if(item.tipo==MMAP){
+            printf("%p: size:%ld. mmap %s (fd:%d) %s\n",item.dir_malloc,item.tam,item.nome_ficheiro,item.key,item.hora);
+        }
+    }
 
+}
