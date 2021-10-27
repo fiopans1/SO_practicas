@@ -30,7 +30,7 @@
 #define BLUE "\x1b[34m"
 #define COLOR_RESET "\x1b[0m"
 typedef char *cadena;
-#define LEERCOMPLETO ((ssize_t)-1)
+#define LEERCOMPLETO ((ssize_t)-1)//definimos LEERCOMPLETO como -1 y le hacemos el cast a tipo ssize_t
 
 
 //definicion de funcines:

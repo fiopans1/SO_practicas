@@ -105,34 +105,36 @@ if (arg[0]==NULL || arg[1]==NULL){/*Listar Direcciones de Memoria Shared */;
     }
 }
 /************************************************************************/
-/************************************************************************/
-void * MmapFichero (char * fichero, int protection){
-int df, map=MAP_PRIVATE,modo=O_RDONLY;
-struct stat s;
-void *p;
-if (protection&PROT_WRITE){ modo=O_RDWR;}
-if (stat(fichero,&s)==-1 || (df=open(fichero, modo))==-1){
+/************************************************************************/ //funciones para mmap y read
+void * MmapFichero (char * fichero, int protection){//mandamos el nombre del ficheroy la proteccion
+int df, map=MAP_PRIVATE,modo=O_RDONLY;//key fichero, en modo es para como queremos abrir el fichero, al principiso solo en modo lectura, y nuestro MMAP se abre de manera privada
+struct stat s;//struct para obtener longitud y  tal
+void *p;//direccion de memoria donde se guarda el fichero
+if (protection&PROT_WRITE){ modo=O_RDWR;}//si vemos que la proteccion tiene activa la lectura, entonces tambien se abre en modo escritura
+if (stat(fichero,&s)==-1 || (df=open(fichero, modo))==-1){//miramos que se pueda abrir el fichero y que podemos obtener su longitud
+//open date a chave para poñela en memoria, e logo mapeamos ca chave
 return NULL;
-}
-if ((p=mmap (NULL,s.st_size, protection,map,df,0))==MAP_FAILED){
-return NULL;
-}
+}//si existe el fichero hacemos el mmap 
+if ((p=mmap (NULL,s.st_size, protection,map,df,0))==MAP_FAILED){//al indicar NULL en mmap el kernel se encarga de asignar la memoria
+    return NULL;
+}//ahora podemos recorrer el fichero como si fuera un array
 /*Guardar Direccion de Mmap (p, s.st_size,fichero,df......);*/
 return p;
 }
 void Mmap (char *arg[]){ /*arg[0] is the file name
     and arg[1] is the permissions*/
-
+    //en esta funcion lo que hacemos es pasarle los argumentos(fichero y permisos)  y declaramos
+    // char permisos, el p direccion y la protecion que tendrá
     char *perm;
     void *p;
     int protection=0;
-    if (arg[0]==NULL){/*Listar Direcciones de Memoria mmap;*/ return;}
+    if (arg[0]==NULL){/*Listar Direcciones de Memoria mmap;*/ return;} //revisamos que el fichero no sea un null
     if ((perm=arg[1])!=NULL && strlen(perm)<4) {
-    if (strchr(perm,'r')!=NULL) protection|=PROT_READ;
+    if (strchr(perm,'r')!=NULL) protection|=PROT_READ; //asignamos los permisos haciendo un or bit a bit
     if (strchr(perm,'w')!=NULL) protection|=PROT_WRITE;
     if (strchr(perm,'x')!=NULL) protection|=PROT_EXEC;
     }
-    if ((p=MmapFichero(arg[0],protection))==NULL){
+    if ((p=MmapFichero(arg[0],protection))==NULL){ //llamamos a la funcion mmap fichero y permisos a asignar
         perror ("Imposible mapear fichero");
     }else{
         printf ("fichero %s mapeado en %p\n", arg[0], p);
@@ -142,21 +144,21 @@ ssize_t LeerFichero (char *fich, void *p, ssize_t n){ /* le n bytes del fichero 
     ssize_t nleidos,tam=n; /*si n==-1 lee el fichero completo*/
     int df, aux;
     struct stat s;
-    if (stat (fich,&s)==-1 || (df=open(fich,O_RDONLY))==-1){
+    if (stat (fich,&s)==-1 || (df=open(fich,O_RDONLY))==-1){//miramos que se pueda abrir el fichero perfectamente(abrimos el fichero como solo lectura)
         return ((ssize_t)-1);
     }
-    if (n==LEERCOMPLETO){
+    if (n==LEERCOMPLETO){//si el tam es -1, entonces leemos todo el fichero
         tam=(ssize_t) s.st_size;
     }
     if ((nleidos=read(df,p, tam))==-1){
         aux=errno;
         close(df);
         errno=aux;
-        return ((ssize_t)-1);
+        return ((ssize_t)-1);//en caso de que no se pueda leer devuelve -1
     }
     close (df);
-    return (nleidos);
-}
+    return (nleidos);//en caso de que se pueda leer devuelve nleidos
+}//con nleidos tenemos el numero de bytes leidos y con *p tenemos los caracteres leidos.
 
 /*********************************************************************/
 /*********************************************************************/
