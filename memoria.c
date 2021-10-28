@@ -56,7 +56,7 @@ void malloc1(cadena trozos[],int n,tListM *M){
 //FUNCIONES QUE NOS DIERON ELLOS:
 /*********************************************************/
 /*********************************************************/
-void * ObtenerMemoriaShmget (key_t clave, size_t tam){
+void * ObtenerMemoriaShmget (key_t clave, size_t tam){//aqui mandamos la clave
      /*Obtienen un puntero a una zaona de memoria compartida*/
 /*si tam >0 intenta crearla y si tam==0 asume que existe*/
 void * p;
@@ -65,10 +65,10 @@ struct shmid_ds s;
 if (tam){  /*si tam no es 0 la crea en modo exclusivo
     esta funcion vale para shared y shared -create*/
 
-     flags=flags | IPC_CREAT | IPC_EXCL;
+     flags=flags | IPC_CREAT | IPC_EXCL;//hace or bit a bit para que cree y no se que
       /*si tam es 0 intenta acceder a una ya creada*/
 }
-if (clave==IPC_PRIVATE){ /*no nos vale*/
+if (clave==IPC_PRIVATE){ /*no nos vale*/ //miramos que el arcivho no sea privado
     errno=EINVAL; return NULL;}
 if ((id=shmget(clave, tam, flags))==-1){
     return (NULL);
@@ -88,17 +88,17 @@ return (p);
 
 void SharedCreate (char *arg[]){ /*arg[0] is the key
     and arg[1] is the size*/
-key_t k;
-size_t tam=0;
-void *p;
-if (arg[0]==NULL || arg[1]==NULL){/*Listar Direcciones de Memoria Shared */;
+key_t k;//esta sera la clave del fichero
+size_t tam=0;//inicializamos ficherp
+void *p;//direccion
+if (arg[0]==NULL || arg[1]==NULL){/*Listar Direcciones de Memoria Shared */; //revosamos que no sea NULL ninguno de los parametos
  return;
  }
-    k=(key_t) atoi(arg[0]);
-    if (arg[1]!=NULL){
-        tam=(size_t) atoll(arg[1]);
+    k=(key_t) atoi(arg[0]);//hacemos un cast de la clave
+    if (arg[1]!=NULL){//comprobamos que el tamaño sea distinto de NULL
+        tam=(size_t) atoll(arg[1]);//hacemos un cast de tam
     }
-    if ((p=ObtenerMemoriaShmget(k,tam))==NULL){
+    if ((p=ObtenerMemoriaShmget(k,tam))==NULL){//obtenemosmemoria
         perror ("Imposible obtener memoria shmget");
     }else{
         printf ("Memoria de shmget de clave %d asignada en %p\n",k,p);
@@ -150,8 +150,8 @@ ssize_t LeerFichero (char *fich, void *p, ssize_t n){ /* le n bytes del fichero 
     if (n==LEERCOMPLETO){//si el tam es -1, entonces leemos todo el fichero
         tam=(ssize_t) s.st_size;
     }
-    if ((nleidos=read(df,p, tam))==-1){
-        aux=errno;
+    if ((nleidos=read(df,p, tam))==-1){//miramos que read devuelva el numero de palabras a nleidos, y en p tendremos los valores leidos para luego mostrar
+        aux=errno;//juegan con el errno para que close no lo sobreescria
         close(df);
         errno=aux;
         return ((ssize_t)-1);//en caso de que no se pueda leer devuelve -1
