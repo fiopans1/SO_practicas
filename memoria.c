@@ -70,28 +70,31 @@ if (tam){  /*si tam no es 0 la crea en modo exclusivo
 }
 if (clave==IPC_PRIVATE){ /*no nos vale*/ //miramos que el arcivho no sea privado
     errno=EINVAL; return NULL;}
-if ((id=shmget(clave, tam, flags))==-1){
+if ((id=shmget(clave, tam, flags))==-1){//con esto creamos la zona de memoria que queremos crear, clave es la clave de la zona de memoria, tma el numero de bits
+// a reservar(si es 0 es para acceder a una ya creada, y flag es los permisos que le damos para acceder), retorna id que es la clave de la zona de memoria a la que accedemos
     return (NULL);
 }
-if ((p=shmat(id,NULL,0))==(void*) -1){
+if ((p=shmat(id,NULL,0))==(void*) -1){//el id es el indentificador de la zona de memoria,  el NULL es la direccion concreta donde reside la memoria compartida
+// y el 0 es el flag para indicar si una zona es de lectura y escritura o solo de lectura
     aux=errno; /*si se ha creado y no se puede mapear*/
     if (tam){ /*se borra */
-        shmctl(id,IPC_RMID,NULL);
+        shmctl(id,IPC_RMID,NULL);//con IPC_RMID borra la memoria compartida
     }
     errno=aux;
     return (NULL);
 }
-shmctl (id,IPC_STAT,&s);
+shmctl (id,IPC_STAT,&s);//borra la memoria compartida que es creada, id es el id de la memoria compartida, la segunda constante indica que hace la funcion. en
+//este caso rellenar la estructura shmid_ds
 /* Guardar En Direcciones de Memoria Shared (p, s.shm_segsz, clave.....);*/
 return (p);
-}
+}//shmdt decinvula una variable de la zona de memoria
 
 void SharedCreate (char *arg[]){ /*arg[0] is the key
     and arg[1] is the size*/
 key_t k;//esta sera la clave del fichero
 size_t tam=0;//inicializamos ficherp
 void *p;//direccion
-if (arg[0]==NULL || arg[1]==NULL){/*Listar Direcciones de Memoria Shared */; //revosamos que no sea NULL ninguno de los parametos
+if (arg[0]==NULL || arg[1]==NULL){/*Listar Direcciones de Memoria Shared */; //revisamos que no sea NULL ninguno de los parametos
  return;
  }
     k=(key_t) atoi(arg[0]);//hacemos un cast de la clave
@@ -166,11 +169,11 @@ void SharedDelkey (char *args[]){/*arg[0] points to a str containing the key*/
     key_t clave;
     int id;
     char *key=args[0];
-    if (key==NULL || (clave=(key_t) strtoul(key,NULL,10))==IPC_PRIVATE){
+    if (key==NULL || (clave=(key_t) strtoul(key,NULL,10))==IPC_PRIVATE){//miramos que la clave no sea nula y que sea publica y no privada
         printf (" shared -delkey clave_valida\n");
         return;
     }
-    if ((id=shmget(clave,0,0666))==-1){
+    if ((id=shmget(clave,0,0666))==-1){//se asgina la memmoria compartida
         perror ("shmget: imposible obtener memoria compartida");
         return;
     }
