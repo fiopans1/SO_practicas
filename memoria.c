@@ -218,4 +218,4 @@ bool isNumber2(cadena param1) {//funcion para comprobar si una cadena es un nume
         return false;
     }
 
-}
+}//mIGUEL ES MARICA
