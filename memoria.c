@@ -1,6 +1,17 @@
 #include "memoria.h"
 
 //MEMORIA:
+void doRecursiva (int n){
+    char automatico[TAMANO];
+    static char estatico[TAMANO];
+    printf ("parametro n:%d en %p",n,&n);
+    printf ("array estatico en:%p ",estatico);
+    printf ("array automatico en %p\n",automatico);
+    n--;
+    if (n>0){
+        doRecursiva(n);
+    }
+}
 void malloc1(cadena trozos[],int n,tListM *M){
     tItemM items;
     tPosM pos;
@@ -10,8 +21,9 @@ void malloc1(cadena trozos[],int n,tListM *M){
     
     }else if(n==2){
         if(isNumber2(trozos[1])){
-        tam=(long int) strtol(trozos[1], NULL, 10);
+        tam=(unsigned long int) strtoul(trozos[1], NULL, 10);//es strtoul en vez de strtol porque la u significa unsigned
         items.dir_malloc=malloc(tam);
+        obt_hora(items.hora);
         if(items.dir_malloc==NULL){
             printf("No se pudo reservar memoria\n");
         }else{
@@ -19,7 +31,6 @@ void malloc1(cadena trozos[],int n,tListM *M){
         items.tipo=MALLOC;
         items.key=0;
         items.tam=tam;
-        obt_hora(items.hora);
         insertItemM(items,NULL,M);
         printf("allocated %ld at %p\n", items.tam,items.dir_malloc);
         }
@@ -30,7 +41,7 @@ void malloc1(cadena trozos[],int n,tListM *M){
 
     }else if(n==3 && strcmp(trozos[1], "-free")==0){
         if(isNumber2(trozos[2])){
-            tam=(long int) strtol(trozos[2], NULL, 10);
+            tam=(unsigned long int) strtoul(trozos[2], NULL, 10);
             pos=findtamM(tam, *M);
             if(pos!=NULL){
                 items=getItemM(pos,*M);
@@ -46,6 +57,126 @@ void malloc1(cadena trozos[],int n,tListM *M){
     }else{
         printf(RED "Opciones no validas para malloc\n" COLOR_RESET); 
     }  
+}
+void mmap1(cadena trozos[],int n,tListM *M){
+    cadena args[2];
+    tPosM pos;
+    tItemM item;
+
+    if(n==1){
+        imprimir_mmap(*M);
+    }else if(n==2){
+        if(strcmp(trozos[1],"-free")!=0){
+            args[0]=trozos[1];
+            args[1]=NULL;
+            Mmap(args,M);
+        }else{
+            printf(RED "Especifique el fichero\n" COLOR_RESET);
+        }
+        
+    }else if(n==3){
+        if(strcmp(trozos[1],"-free")==0){
+            pos=findfichM(trozos[2], *M);
+            if(pos==NULL){
+                printf("No se puede borrar el archivo porque no tiene permisos o no fue mapeado");
+            }else{
+                item=getItemM(pos,*M);
+                if(munmap(item.dir_malloc,item.tam)==-1){
+                    perror("error");
+                }else{
+                    printf("Se desalojo perfectamente la memoria reservada para %s\n", item.nome_ficheiro);
+                    deleteAtPositionM(pos,M);                   
+                }
+            }            
+        }else{
+            args[0]=trozos[1];
+            args[1]=trozos[2];
+            Mmap(args,M);
+    
+        }
+    }else{
+        if(strcmp(trozos[1],"-free")==0){
+            pos=findfichM(trozos[2], *M);
+            if(pos==NULL){
+                printf("No se puede borrar el archivo porque no tiene permisos o no fue mapeado");
+            }else{
+                item=getItemM(pos,*M);
+                if(munmap(item.dir_malloc,item.tam)==-1){
+                    perror("error");
+                }else{
+                    printf("Se desalojo perfectamente la memoria reservada para %s\n", item.nome_ficheiro);
+                    deleteAtPositionM(pos,M);                   
+                }
+            }            
+        }else{
+            printf(RED "Opciones no validas para mmap\n" COLOR_RESET);
+        }
+    }
+}
+void dealloc(cadena trozos[], int n, tListM *M){
+    tItemM items;
+    tPosM pos;
+    long int tam;
+    if(n==1){
+        imprimir_listacompleta(*M);
+    }else if(n==2){//por direcciones
+        pos=finddirM(((void *) strtoull(trozos[1], NULL, 16)),*M);
+        if(pos==NULL){
+            printf(RED "Direccion no encontrada en la lista\n" COLOR_RESET);
+        }else{
+            items=getItemM(pos,*M);
+            if(items.tipo==MALLOC){
+                free(items.dir_malloc);
+                printf("deallocated %ld at %p\n",items.tam, items.dir_malloc);
+                deleteAtPositionM(pos,M);
+            }else if(items.tipo==MMAP){
+                if(munmap(items.dir_malloc,items.tam)==-1){
+                    perror("error");
+                }else{
+                    printf("Se desalojo perfectamente la memoria reservada para %s\n", items.nome_ficheiro);
+                    deleteAtPositionM(pos,M);                   
+                }
+            }else if(items.tipo==SHARED){
+                //RELLENAR CUANDO TENGAMOS SHARED
+
+            }
+        }
+
+    }else if(n>=3){
+        if(strcmp(trozos[1],"-malloc")==0){//caso malloc
+            if(isNumber2(trozos[2])){
+                tam=(long int) strtol(trozos[2], NULL, 10);
+                pos=findtamM(tam, *M);
+                if(pos!=NULL){
+                    items=getItemM(pos,*M);
+                    free(items.dir_malloc);
+                    printf("deallocated %ld at %p\n",items.tam, items.dir_malloc);
+                    deleteAtPositionM(pos,M);
+                }else{
+                    printf(RED "Tamaño no encontrado\n" COLOR_RESET);
+                }
+            }else{
+            printf(RED "Valor no valido\n" COLOR_RESET); 
+            }
+
+        }else if(strcmp(trozos[1],"-mmap")==0){//caso mmap
+            pos=findfichM(trozos[2], *M);
+            if(pos==NULL){
+                printf("No se puede borrar el archivo porque no tiene permisos o no fue mapeado");
+            }else{
+                items=getItemM(pos,*M);
+                if(munmap(items.dir_malloc,items.tam)==-1){
+                    perror("error");
+                }else{
+                    printf("Se desalojo perfectamente la memoria reservada para %s\n", items.nome_ficheiro);
+                    deleteAtPositionM(pos,M);                   
+                }
+            }  
+
+        }else if(strcmp(trozos[1],"-shared")==0){//caso shared
+            //RELLENAR CUANDO TENGAMOS SHARED
+        }
+    }
 }
 
 
@@ -109,22 +240,30 @@ if (arg[0]==NULL || arg[1]==NULL){/*Listar Direcciones de Memoria Shared */; //r
 }
 /************************************************************************/
 /************************************************************************/ //funciones para mmap y read
-void * MmapFichero (char * fichero, int protection){//mandamos el nombre del ficheroy la proteccion
-int df, map=MAP_PRIVATE,modo=O_RDONLY;//key fichero, en modo es para como queremos abrir el fichero, al principiso solo en modo lectura, y nuestro MMAP se abre de manera privada
-struct stat s;//struct para obtener longitud y  tal
-void *p;//direccion de memoria donde se guarda el fichero
-if (protection&PROT_WRITE){ modo=O_RDWR;}//si vemos que la proteccion tiene activa la lectura, entonces tambien se abre en modo escritura
-if (stat(fichero,&s)==-1 || (df=open(fichero, modo))==-1){//miramos que se pueda abrir el fichero y que podemos obtener su longitud
-//open date a chave para poñela en memoria, e logo mapeamos ca chave
-return NULL;
-}//si existe el fichero hacemos el mmap 
-if ((p=mmap (NULL,s.st_size, protection,map,df,0))==MAP_FAILED){//al indicar NULL en mmap el kernel se encarga de asignar la memoria
+void * MmapFichero (char * fichero, int protection, tListM *M){//mandamos el nombre del ficheroy la proteccion
+    tItemM item;
+    int df, map=MAP_PRIVATE,modo=O_RDONLY;//key fichero, en modo es para como queremos abrir el fichero, al principiso solo en modo lectura, y nuestro MMAP se abre de manera privada
+    struct stat s;//struct para obtener longitud y  tal
+    void *p;//direccion de memoria donde se guarda el fichero
+    if (protection&PROT_WRITE){ modo=O_RDWR;}//si vemos que la proteccion tiene activa la lectura, entonces tambien se abre en modo escritura
+    if (stat(fichero,&s)==-1 || (df=open(fichero, modo))==-1){//miramos que se pueda abrir el fichero y que podemos obtener su longitud
+    //open date a chave para poñela en memoria, e logo mapeamos ca chave
     return NULL;
-}//ahora podemos recorrer el fichero como si fuera un array
-/*Guardar Direccion de Mmap (p, s.st_size,fichero,df......);*/
-return p;
+    }//si existe el fichero hacemos el mmap 
+    if ((p=mmap (NULL,s.st_size, protection,map,df,0))==MAP_FAILED){//al indicar NULL en mmap el kernel se encarga de asignar la memoria
+        return NULL;
+    }//ahora podemos recorrer el fichero como si fuera un array
+    obt_hora(item.hora);
+    /*Guardar Direccion de Mmap (p, s.st_size,fichero,df......);*/
+    item.dir_malloc=p;
+    strcpy(item.nome_ficheiro,fichero);
+    item.key=df;
+    item.tam=s.st_size;
+    item.tipo=MMAP;
+    insertItemM(item,NULL,M);
+    return p;
 }
-void Mmap (char *arg[]){ /*arg[0] is the file name
+void Mmap (char *arg[], tListM *M){ /*arg[0] is the file name
     and arg[1] is the permissions*/
     //en esta funcion lo que hacemos es pasarle los argumentos(fichero y permisos)  y declaramos
     // char permisos, el p direccion y la protecion que tendrá
@@ -137,7 +276,7 @@ void Mmap (char *arg[]){ /*arg[0] is the file name
     if (strchr(perm,'w')!=NULL) protection|=PROT_WRITE;
     if (strchr(perm,'x')!=NULL) protection|=PROT_EXEC;
     }
-    if ((p=MmapFichero(arg[0],protection))==NULL){ //llamamos a la funcion mmap fichero y permisos a asignar
+    if ((p=MmapFichero(arg[0],protection, M))==NULL){ //llamamos a la funcion mmap fichero y permisos a asignar
         perror ("Imposible mapear fichero");
     }else{
         printf ("fichero %s mapeado en %p\n", arg[0], p);

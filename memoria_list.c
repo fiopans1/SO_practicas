@@ -197,7 +197,7 @@ void imprimir_listacompleta(tListM M){
     for(tPosM p=M; p!=NULL; p=nextM(p,M)){
         item=getItemM(p,M);
         if(item.tipo==MALLOC){
-            printf("%p: size:%ld. mmap %s (fd:%d) %s\n",item.dir_malloc,item.tam,item.nome_ficheiro,item.key,item.hora);
+            printf("%p: size:%ld. malloc %s\n",item.dir_malloc,item.tam,item.hora);
         }else if(item.tipo==SHARED){
             printf("%p: size:%ld. shared memory (fd:%d) %s\n",item.dir_malloc,item.tam,item.key,item.hora);
         }else if(item.tipo==MMAP){

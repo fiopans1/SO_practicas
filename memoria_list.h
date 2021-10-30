@@ -51,8 +51,10 @@ bool createNodeM(tPosM *p);
 void deleteListM(tListM *L);
 tPosM findtamM(unsigned long int, tListM);
 tPosM findfichM(char *fich, tListM L);
+tPosM finddirM(void *dir, tListM L);
 void imprimir_malloc(tListM M);
 void imprimir_mmap(tListM M);
 void imprimir_shared(tListM M);
+void imprimir_listacompleta(tListM M);
 
 #endif

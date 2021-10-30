@@ -206,7 +206,10 @@ void procesarEntrada(cadena N, tList *L,tListM *M){//procesamos la entrada
                 for(tPosM p=*M; p!=NULL;p=nextM(p,*M)){
                     if(p->data.tipo==MALLOC){
                         free(p->data.dir_malloc);
-                    }//añadir caso mmap y caso share
+                    }else if(p->data.tipo==MMAP){
+                        munmap(p->data.dir_malloc, p->data.tam);
+                        close(p->data.key);
+                    }    //añadir caso mmap y caso share
                 }
                 for(int i=0;i<n;i++){
                     free(trozos[i]);
@@ -228,12 +231,27 @@ void procesarEntrada(cadena N, tList *L,tListM *M){//procesamos la entrada
             }else if(strcmp(trozos[0],"malloc")==0){
                 malloc1(trozos,n,M);
             }else if(strcmp(trozos[0],"mmap")==0){
-            //rellenar
+                mmap1(trozos,n,M);
             }else if(strcmp(trozos[0],"shared")==0){
             //rellenar
+            }else if(strcmp(trozos[0],"recursiva")==0){
+                int n1;
+                if(n==2){
+                    if(isNumber(trozos[1])){
+                        n1=(int) strtol(trozos[1], NULL, 10);
+                        doRecursiva(n1);
+                    }else{
+                        doRecursiva(0);
+                    }
+                }else if(n>2){
+                    if(isNumber(trozos[1])){
+                        n1=(int) strtol(trozos[1], NULL, 10);
+                        doRecursiva(n1);                       
+                    }
+                }
             
-            
-            
+            }else if(strcmp(trozos[0],"dealloc")==0){
+                dealloc(trozos,n,M);
             }else{
                 printf(RED "This command doesn't exist\n" COLOR_RESET);
             }

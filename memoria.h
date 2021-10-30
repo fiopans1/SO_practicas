@@ -31,11 +31,20 @@
 #define COLOR_RESET "\x1b[0m"
 typedef char *cadena;
 #define LEERCOMPLETO ((ssize_t)-1)//definimos LEERCOMPLETO como -1 y le hacemos el cast a tipo ssize_t
+#define TAMANO 4096
 
 
 //definicion de funcines:
 void malloc1(cadena trozos[],int n,tListM *M);
+void mmap1(cadena trozos[],int n,tListM *M);
+void doRecursiva (int n);
+void dealloc(cadena trozos[], int n, tListM *M);
 //funciones secundarias:
 void obt_hora(char hora[]);
 bool isNumber2(cadena param1); 
+
+
+//funciones que nos dieron ellos:
+void * MmapFichero (char * fichero, int protection, tListM *M);
+void Mmap (char *arg[], tListM *M);
 #endif
