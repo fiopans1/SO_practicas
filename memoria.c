@@ -235,6 +235,30 @@ void shared1(cadena trozos[], int n, tListM *M){
     }
 }
 
+void memoria(cadena trozos[], int n, tListM *M){
+    static int st1,st2,st3;
+    int loc1,loc2,loc3;
+    if(n==1){
+        printf("Estáticas: %p %p %p\n",&st1,&st2,&st3);
+        printf("Locales: %p %p %p\n",&loc1,&loc2,&loc3);
+        printf("Globales: %p %p %p\n",&global1,&global2,&global3);
+        printf("Funciones programa: %p %p %p\n", (void *) memoria,(void *) MmapFichero,(void *) ObtenerMemoriaShmget);
+        printf("Funciones C: %p %p %p\n", (void *) shmget,(void *) malloc,(void *) free);
+        imprimir_listacompleta(*M);
+    }else if(n>=2){
+        if(strcmp(trozos[1],"-vars")==0){
+            printf("Estáticas: %p %p %p\n",&st1,&st2,&st3);
+            printf("Locales: %p %p %p\n",&loc1,&loc2,&loc3);
+            printf("Globales: %p %p %p\n",&global1,&global2,&global3);
+
+        }else if(strcmp(trozos[1],"-funcs")==0){
+            printf("Funciones programa: %p %p %p\n", (void *) memoria,(void *) MmapFichero,(void *) ObtenerMemoriaShmget);
+            printf("Funciones C: %p %p %p\n", (void *) shmget,(void *) malloc,(void *) free);
+        }//terminar memoria
+    }
+
+}
+
 
 
 

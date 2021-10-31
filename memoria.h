@@ -32,6 +32,7 @@
 typedef char *cadena;
 #define LEERCOMPLETO ((ssize_t)-1)//definimos LEERCOMPLETO como -1 y le hacemos el cast a tipo ssize_t
 #define TAMANO 4096
+int global1, global2, global3;
 
 
 //definicion de funcines:
@@ -40,6 +41,7 @@ void mmap1(cadena trozos[],int n,tListM *M);
 void doRecursiva (int n);
 void dealloc(cadena trozos[], int n, tListM *M);
 void shared1(cadena trozos[], int n, tListM *M);
+void memoria(cadena trozos[], int n, tListM *M);
 //funciones secundarias:
 void obt_hora(char hora[]);
 bool isNumber2(cadena param1); 

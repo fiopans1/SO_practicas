@@ -252,6 +252,8 @@ void procesarEntrada(cadena N, tList *L,tListM *M){//procesamos la entrada
             
             }else if(strcmp(trozos[0],"dealloc")==0){
                 dealloc(trozos,n,M);
+            }else if(strcmp(trozos[0],"memoria")==0){
+                memoria(trozos,n,M);
             }else{
                 printf(RED "This command doesn't exist\n" COLOR_RESET);
             }
