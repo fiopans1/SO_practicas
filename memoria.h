@@ -39,12 +39,16 @@ void malloc1(cadena trozos[],int n,tListM *M);
 void mmap1(cadena trozos[],int n,tListM *M);
 void doRecursiva (int n);
 void dealloc(cadena trozos[], int n, tListM *M);
+void shared1(cadena trozos[], int n, tListM *M);
 //funciones secundarias:
 void obt_hora(char hora[]);
 bool isNumber2(cadena param1); 
 
 
 //funciones que nos dieron ellos:
+void * ObtenerMemoriaShmget (key_t clave, size_t tam,tListM *M);
+void SharedCreate (char *arg[],tListM *M);
 void * MmapFichero (char * fichero, int protection, tListM *M);
 void Mmap (char *arg[], tListM *M);
+void SharedDelkey (char *args[], tListM *M);
 #endif

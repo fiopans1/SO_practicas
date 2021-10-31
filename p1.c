@@ -233,7 +233,7 @@ void procesarEntrada(cadena N, tList *L,tListM *M){//procesamos la entrada
             }else if(strcmp(trozos[0],"mmap")==0){
                 mmap1(trozos,n,M);
             }else if(strcmp(trozos[0],"shared")==0){
-            //rellenar
+                shared1(trozos,n,M);
             }else if(strcmp(trozos[0],"recursiva")==0){
                 int n1;
                 if(n==2){

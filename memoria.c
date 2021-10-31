@@ -20,40 +20,68 @@ void malloc1(cadena trozos[],int n,tListM *M){
         imprimir_malloc(*M);
     
     }else if(n==2){
-        if(isNumber2(trozos[1])){
-        tam=(unsigned long int) strtoul(trozos[1], NULL, 10);//es strtoul en vez de strtol porque la u significa unsigned
-        items.dir_malloc=malloc(tam);
-        obt_hora(items.hora);
-        if(items.dir_malloc==NULL){
-            printf("No se pudo reservar memoria\n");
+        if(strcmp(trozos[1], "-free")==0){
+            imprimir_malloc(*M);
         }else{
-        strcpy(items.nome_ficheiro,"");
-        items.tipo=MALLOC;
-        items.key=0;
-        items.tam=tam;
-        insertItemM(items,NULL,M);
-        printf("allocated %ld at %p\n", items.tam,items.dir_malloc);
-        }
-        }else{
-            printf(RED "Valor no valido\n" COLOR_RESET);
-        }
-
-
-    }else if(n==3 && strcmp(trozos[1], "-free")==0){
-        if(isNumber2(trozos[2])){
-            tam=(unsigned long int) strtoul(trozos[2], NULL, 10);
-            pos=findtamM(tam, *M);
-            if(pos!=NULL){
-                items=getItemM(pos,*M);
-                free(items.dir_malloc);
-                printf("deallocated %ld at %p\n",items.tam, items.dir_malloc);
-                deleteAtPositionM(pos,M);
+            if(isNumber2(trozos[1])){
+            tam=(unsigned long int) strtoul(trozos[1], NULL, 10);//es strtoul en vez de strtol porque la u significa unsigned
+            items.dir_malloc=malloc(tam);
+            obt_hora(items.hora);
+            if(items.dir_malloc==NULL){
+                printf("No se pudo reservar memoria\n");
             }else{
-                printf(RED "Tamaño no encontrado\n" COLOR_RESET);
+            strcpy(items.nome_ficheiro,"");
+            items.tipo=MALLOC;
+            items.key=0;
+            items.tam=tam;
+            insertItemM(items,NULL,M);
+            printf("allocated %ld at %p\n", items.tam,items.dir_malloc);
+            }
+            }else{
+                printf(RED "Valor no valido\n" COLOR_RESET);
+            }
+        }
+
+
+    }else if(n>=3){
+        if(strcmp(trozos[1], "-free")==0){
+            if(isNumber2(trozos[2])){
+                tam=(unsigned long int) strtoul(trozos[2], NULL, 10);
+                pos=findtamM(tam, *M);
+                if(pos!=NULL){
+                    items=getItemM(pos,*M);
+                    free(items.dir_malloc);
+                    printf("deallocated %ld at %p\n",items.tam, items.dir_malloc);
+                    deleteAtPositionM(pos,M);
+                }else{
+                    printf(RED "Tamaño no encontrado\n" COLOR_RESET);
+                }
+            }else{
+            printf(RED "Valor no valido\n" COLOR_RESET); 
             }
         }else{
-           printf(RED "Valor no valido\n" COLOR_RESET); 
+            if(isNumber2(trozos[1])){
+                tam=(unsigned long int) strtoul(trozos[1], NULL, 10);//es strtoul en vez de strtol porque la u significa unsigned
+                items.dir_malloc=malloc(tam);
+                obt_hora(items.hora);
+                if(items.dir_malloc==NULL){
+                    printf("No se pudo reservar memoria\n");
+                }else{
+                strcpy(items.nome_ficheiro,"");
+                items.tipo=MALLOC;
+                items.key=0;
+                items.tam=tam;
+                insertItemM(items,NULL,M);
+                printf("allocated %ld at %p\n", items.tam,items.dir_malloc);
+                }
+                }else{
+                    printf(RED "Valor no valido\n" COLOR_RESET);
+            }
+
         }
+    
+    
+    
     }else{
         printf(RED "Opciones no validas para malloc\n" COLOR_RESET); 
     }  
@@ -71,10 +99,10 @@ void mmap1(cadena trozos[],int n,tListM *M){
             args[1]=NULL;
             Mmap(args,M);
         }else{
-            printf(RED "Especifique el fichero\n" COLOR_RESET);
+            imprimir_mmap(*M);
         }
         
-    }else if(n==3){
+    }else if(n>=3){
         if(strcmp(trozos[1],"-free")==0){
             pos=findfichM(trozos[2], *M);
             if(pos==NULL){
@@ -94,23 +122,6 @@ void mmap1(cadena trozos[],int n,tListM *M){
             Mmap(args,M);
     
         }
-    }else{
-        if(strcmp(trozos[1],"-free")==0){
-            pos=findfichM(trozos[2], *M);
-            if(pos==NULL){
-                printf("No se puede borrar el archivo porque no tiene permisos o no fue mapeado");
-            }else{
-                item=getItemM(pos,*M);
-                if(munmap(item.dir_malloc,item.tam)==-1){
-                    perror("error");
-                }else{
-                    printf("Se desalojo perfectamente la memoria reservada para %s\n", item.nome_ficheiro);
-                    deleteAtPositionM(pos,M);                   
-                }
-            }            
-        }else{
-            printf(RED "Opciones no validas para mmap\n" COLOR_RESET);
-        }
     }
 }
 void dealloc(cadena trozos[], int n, tListM *M){
@@ -120,25 +131,33 @@ void dealloc(cadena trozos[], int n, tListM *M){
     if(n==1){
         imprimir_listacompleta(*M);
     }else if(n==2){//por direcciones
-        pos=finddirM(((void *) strtoull(trozos[1], NULL, 16)),*M);
-        if(pos==NULL){
-            printf(RED "Direccion no encontrada en la lista\n" COLOR_RESET);
+        if(strcmp(trozos[1],"-malloc")==0){
+            imprimir_malloc(*M);
+        }else if(strcmp(trozos[1],"-mmap")==0){
+            imprimir_mmap(*M);
+        }else if(strcmp(trozos[1],"-shared")==0){
+            imprimir_shared(*M);
         }else{
-            items=getItemM(pos,*M);
-            if(items.tipo==MALLOC){
-                free(items.dir_malloc);
-                printf("deallocated %ld at %p\n",items.tam, items.dir_malloc);
-                deleteAtPositionM(pos,M);
-            }else if(items.tipo==MMAP){
-                if(munmap(items.dir_malloc,items.tam)==-1){
-                    perror("error");
-                }else{
-                    printf("Se desalojo perfectamente la memoria reservada para %s\n", items.nome_ficheiro);
-                    deleteAtPositionM(pos,M);                   
-                }
-            }else if(items.tipo==SHARED){
-                //RELLENAR CUANDO TENGAMOS SHARED
+            pos=finddirM(((void *) strtoull(trozos[1], NULL, 16)),*M);
+            if(pos==NULL){
+                printf(RED "Direccion no encontrada en la lista\n" COLOR_RESET);
+            }else{
+                items=getItemM(pos,*M);
+                if(items.tipo==MALLOC){
+                    free(items.dir_malloc);
+                    printf("deallocated %ld at %p\n",items.tam, items.dir_malloc);
+                    deleteAtPositionM(pos,M);
+                }else if(items.tipo==MMAP){
+                    if(munmap(items.dir_malloc,items.tam)==-1){
+                        perror("error");
+                    }else{
+                        printf("Se desalojo perfectamente la memoria reservada para %s\n", items.nome_ficheiro);
+                        deleteAtPositionM(pos,M);                   
+                    }
+                }else if(items.tipo==SHARED){
+                    //RELLENAR CUANDO TENGAMOS SHARED
 
+                }
             }
         }
 
@@ -153,10 +172,10 @@ void dealloc(cadena trozos[], int n, tListM *M){
                     printf("deallocated %ld at %p\n",items.tam, items.dir_malloc);
                     deleteAtPositionM(pos,M);
                 }else{
-                    printf(RED "Tamaño no encontrado\n" COLOR_RESET);
+                    printf("No se puede borrar el archivo porque no tiene permisos o no fue mapeado");
                 }
             }else{
-            printf(RED "Valor no valido\n" COLOR_RESET); 
+                printf(RED "Tamaño no encontrado\n" COLOR_RESET);
             }
 
         }else if(strcmp(trozos[1],"-mmap")==0){//caso mmap
@@ -179,6 +198,42 @@ void dealloc(cadena trozos[], int n, tListM *M){
     }
 }
 
+void shared1(cadena trozos[], int n, tListM *M){
+    cadena args[2];
+    if(n==1 || n==2){
+        imprimir_shared(*M);
+    }else if(n==3){
+        if(strcmp(trozos[1],"-free")==0){
+
+        }else if(strcmp(trozos[1],"-create")==0){
+            imprimir_shared(*M);
+        }else if(strcmp(trozos[1],"-delkey")==0){
+            args[0]=trozos[2];
+            args[1]=NULL;
+            SharedDelkey(args,M);
+
+        }else{
+            imprimir_shared(*M);
+        }
+
+    }else if(n>=4){
+        if(strcmp(trozos[1],"-free")==0){
+
+        }else if(strcmp(trozos[1],"-create")==0){
+            args[0]=trozos[2];
+            args[1]=trozos[3];
+            SharedCreate(args,M);
+        }else if(strcmp(trozos[1],"-delkey")==0){
+            args[0]=trozos[2];
+            args[1]=NULL;
+            SharedDelkey(args,M);
+
+        }else{
+
+        }
+
+    }
+}
 
 
 
@@ -187,12 +242,13 @@ void dealloc(cadena trozos[], int n, tListM *M){
 //FUNCIONES QUE NOS DIERON ELLOS:
 /*********************************************************/
 /*********************************************************/
-void * ObtenerMemoriaShmget (key_t clave, size_t tam){//aqui mandamos la clave
+void * ObtenerMemoriaShmget (key_t clave, size_t tam,tListM *M){//aqui mandamos la clave
         /*Obtienen un puntero a una zaona de memoria compartida*/
     /*si tam >0 intenta crearla y si tam==0 asume que existe*/
     void * p;
     int aux,id,flags=0777;
     struct shmid_ds s;
+    tItemM item;
     if (tam){  /*si tam no es 0 la crea en modo exclusivo
         esta funcion vale para shared y shared -create*/
 
@@ -205,6 +261,7 @@ void * ObtenerMemoriaShmget (key_t clave, size_t tam){//aqui mandamos la clave
     // a reservar(si es 0 es para acceder a una ya creada, y flag es los permisos que le damos para acceder), retorna id que es la clave de la zona de memoria a la que accedemos
         return (NULL);
     }
+    obt_hora(item.hora);
     if ((p=shmat(id,NULL,0))==(void*) -1){//el id es el indentificador de la zona de memoria,  el NULL es la direccion concreta donde reside la memoria compartida
     // y el 0 es el flag para indicar si una zona es de lectura y escritura o solo de lectura
         aux=errno; /*si se ha creado y no se puede mapear*/
@@ -217,10 +274,17 @@ void * ObtenerMemoriaShmget (key_t clave, size_t tam){//aqui mandamos la clave
     shmctl (id,IPC_STAT,&s);//borra la memoria compartida que es creada, id es el id de la memoria compartida, la segunda constante indica que hace la funcion. en
     //este caso rellenar la estructura shmid_ds
     /* Guardar En Direcciones de Memoria Shared (p, s.shm_segsz, clave.....);*/
+    item.dir_malloc=p;
+    item.key=clave;
+    strcpy(item.nome_ficheiro,"");
+    item.tam=s.shm_segsz;
+    item.tipo=SHARED;
+    insertItemM(item,NULL,M);
+
     return (p);
 }//shmdt decinvula una variable de la zona de memoria
 
-void SharedCreate (char *arg[]){ /*arg[0] is the key
+void SharedCreate (char *arg[],tListM *M){ /*arg[0] is the key
         and arg[1] is the size*/
     key_t k;//esta sera la clave del fichero
     size_t tam=0;//inicializamos ficherp
@@ -232,7 +296,7 @@ void SharedCreate (char *arg[]){ /*arg[0] is the key
         if (arg[1]!=NULL){//comprobamos que el tamaño sea distinto de NULL
             tam=(size_t) atoll(arg[1]);//hacemos un cast de tam
         }
-        if ((p=ObtenerMemoriaShmget(k,tam))==NULL){//obtenemosmemoria
+        if ((p=ObtenerMemoriaShmget(k,tam,M))==NULL){//obtenemosmemoria
             perror ("Imposible obtener memoria shmget");
         }else{
             printf ("Memoria de shmget de clave %d asignada en %p\n",k,p);
@@ -304,10 +368,11 @@ ssize_t LeerFichero (char *fich, void *p, ssize_t n){ /* le n bytes del fichero 
 
 /*********************************************************************/
 /*********************************************************************/
-void SharedDelkey (char *args[]){/*arg[0] points to a str containing the key*/ //sirve para eliminar la zona de memoria compartida
+void SharedDelkey (char *args[], tListM *M){/*arg[0] points to a str containing the key*/ //sirve para eliminar la zona de memoria compartida
     key_t clave;
     int id;
     char *key=args[0];
+    tPosM pos;
     if (key==NULL || (clave=(key_t) strtoul(key,NULL,10))==IPC_PRIVATE){//miramos que la clave no sea nula y que sea publica y no privada
         printf (" shared -delkey clave_valida\n");
         return;
@@ -316,7 +381,15 @@ void SharedDelkey (char *args[]){/*arg[0] points to a str containing the key*/ /
         perror ("shmget: imposible obtener memoria compartida");
         return;
     }
-    if (shmctl(id,IPC_RMID,NULL)==-1){  perror ("shmctl: imposible eliminar memoria compartida\n");}//se elimina la memoria compartida
+    if (shmctl(id,IPC_RMID,NULL)==-1){  perror ("shmctl: imposible eliminar memoria compartida\n");}else{//se elimina la memoria compartida
+        pos=findkeyM(((int) clave),*M);
+        if(pos==NULL){
+            printf("Se eliminó el bloque de memoria pero no el elemento de la lista\n");
+        }else{
+            deleteAtPositionM(pos,M);
+            printf("Se eliminó correctamente el bloque a eliminar\n");
+        }
+    }
 }
 
 void dopmap (void){ /*no arguments necessary*/
