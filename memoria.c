@@ -254,7 +254,16 @@ void memoria(cadena trozos[], int n, tListM *M){
         }else if(strcmp(trozos[1],"-funcs")==0){
             printf("Funciones programa: %p %p %p\n", (void *) memoria,(void *) MmapFichero,(void *) ObtenerMemoriaShmget);
             printf("Funciones C: %p %p %p\n", (void *) shmget,(void *) malloc,(void *) free);
-        }//terminar memoria
+        }else if(strcmp(trozos[1],"-all")==0){
+            printf("Estáticas: %p %p %p\n",&st1,&st2,&st3);
+            printf("Locales: %p %p %p\n",&loc1,&loc2,&loc3);
+            printf("Globales: %p %p %p\n",&global1,&global2,&global3);
+            printf("Funciones programa: %p %p %p\n", (void *) memoria,(void *) MmapFichero,(void *) ObtenerMemoriaShmget);
+            printf("Funciones C: %p %p %p\n", (void *) shmget,(void *) malloc,(void *) free);
+            imprimir_listacompleta(*M);
+        }else if(strcmp(trozos[1],"-pmap")==0){
+            dopmap();
+        }
     }
 
 }
@@ -417,19 +426,19 @@ void SharedDelkey (char *args[], tListM *M){/*arg[0] points to a str containing 
 }
 
 void dopmap (void){ /*no arguments necessary*/
-    pid_t pid; /*ejecuta el comando externo pmap para */
-    char elpid[32]; /*pasandole el pid del proceso actual */
-    char *argv[3]={"pmap",elpid,NULL};
-    sprintf (elpid,"%d", (int) getpid());
-    if ((pid=fork())==-1){
+    pid_t etesech; /*ejecuta el comando externo pmap para */
+    char elpepe[32]; /*pasandole el pid del proceso actual */
+    char *argv[3]={"pmap",elpepe,NULL};
+    sprintf (elpepe,"%d", (int) getpid());
+    if ((etesech=fork())==-1){
         perror ("Imposible crear proceso");
         return;
     }
-    if (pid==0){
+    if (etesech==0){
         if (execvp(argv[0],argv)==-1){perror("cannot execute pmap");}
         exit(1);
     }
-    waitpid (pid,NULL,0);
+    waitpid (etesech,NULL,0);
 }
 
 

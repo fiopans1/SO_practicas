@@ -53,4 +53,5 @@ void SharedCreate (char *arg[],tListM *M);
 void * MmapFichero (char * fichero, int protection, tListM *M);
 void Mmap (char *arg[], tListM *M);
 void SharedDelkey (char *args[], tListM *M);
+void dopmap (void);
 #endif
