@@ -52,6 +52,6 @@ void * ObtenerMemoriaShmget (key_t clave, size_t tam,tListM *M);
 void SharedCreate (char *arg[],tListM *M);
 void * MmapFichero (char * fichero, int protection, tListM *M);
 void Mmap (char *arg[], tListM *M);
-void SharedDelkey (char *args[], tListM *M);
+void SharedDelkey (char *args[]);
 void dopmap (void);
 #endif
