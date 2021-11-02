@@ -167,7 +167,7 @@ tPosM finddirM(void *dir, tListM L){
 
 void imprimir_malloc(tListM M){
     tItemM item;
-    puts("Mostrand lista de bloques asignados con MALLOCS:");
+    puts("Mostrando lista de bloques asignados con MALLOCS:");
     for(tPosM p=M; p!=NULL; p=nextM(p,M)){
         item=getItemM(p,M);
         if(item.tipo==MALLOC){
@@ -177,7 +177,7 @@ void imprimir_malloc(tListM M){
 }
 void imprimir_shared(tListM M){
     tItemM item;
-    puts("Mostrand lista de bloques asignados con SHARED:");
+    puts("Mostrando lista de bloques asignados con SHARED:");
     for(tPosM p=M; p!=NULL; p=nextM(p,M)){
         item=getItemM(p,M);
         if(item.tipo==SHARED){
@@ -187,7 +187,7 @@ void imprimir_shared(tListM M){
 }
 void imprimir_mmap(tListM M){
     tItemM item;
-    puts("Mostrand lista de bloques asignados con MMAP:");
+    puts("Mostrando lista de bloques asignados con MMAP:");
     for(tPosM p=M; p!=NULL; p=nextM(p,M)){
         item=getItemM(p,M);
         if(item.tipo==MMAP){
@@ -197,7 +197,7 @@ void imprimir_mmap(tListM M){
 }
 void imprimir_listacompleta(tListM M){
         tItemM item;
-        puts("Mostrand lista de bloques COMPLETA:");
+        puts("Mostrando lista de bloques COMPLETA:");
     for(tPosM p=M; p!=NULL; p=nextM(p,M)){
         item=getItemM(p,M);
         if(item.tipo==MALLOC){

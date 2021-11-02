@@ -125,7 +125,9 @@ void mmap1(cadena trozos[],int n,tListM *M){
     }
 }
 void dealloc(cadena trozos[], int n, tListM *M){
+    //cadena args[1];
     tItemM items;
+    //char *aux;
     tPosM pos;
     long int tam;
     if(n==1){
@@ -154,8 +156,12 @@ void dealloc(cadena trozos[], int n, tListM *M){
                         printf("Se desalojo perfectamente la memoria reservada para %s\n", items.nome_ficheiro);
                         deleteAtPositionM(pos,M);                   
                     }
-                }else if(items.tipo==SHARED){
-                    //RELLENAR CUANDO TENGAMOS SHARED
+                }else if(items.tipo==SHARED){//convertimos de int  a char
+                    //aux=malloc(sizeof(items.key));
+                    //sprintf(aux,"%d",items.key);
+                    //args[0]=aux;
+                    //RELLENAR CUANDO TENGAMOS SHARED -FREE
+                    //free(aux);
 
                 }
             }
@@ -193,15 +199,19 @@ void dealloc(cadena trozos[], int n, tListM *M){
             }  
 
         }else if(strcmp(trozos[1],"-shared")==0){//caso shared
-            //RELLENAR CUANDO TENGAMOS SHARED
+            //RELLENAR CUANDO TENGAMOS SHARED -FREE
         }
     }
 }
 
 void shared1(cadena trozos[], int n, tListM *M){
     cadena args[2];
-    if(n==1 || n==2){
+    if(n==1){
         imprimir_shared(*M);
+    }else if(n==2){
+        if(ObtenerMemoriaShmget((key_t)strtoul(trozos[1],NULL,10),0,M)==NULL){
+            printf("Algo salió mal al intentar compartir memoria");
+        }
     }else if(n==3){
         if(strcmp(trozos[1],"-free")==0){
 
@@ -313,6 +323,9 @@ void * ObtenerMemoriaShmget (key_t clave, size_t tam,tListM *M){//aqui mandamos 
     item.tam=s.shm_segsz;
     item.tipo=SHARED;
     insertItemM(item,NULL,M);
+    if(tam==0){
+        printf("Se compartió correctamente la clave %d en %p\n", item.key,item.dir_malloc);
+    }
 
     return (p);
 }//shmdt decinvula una variable de la zona de memoria
@@ -415,15 +428,16 @@ void SharedDelkey (char *args[], tListM *M){/*arg[0] points to a str containing 
         return;
     }
     if (shmctl(id,IPC_RMID,NULL)==-1){  perror ("shmctl: imposible eliminar memoria compartida\n");}else{//se elimina la memoria compartida
-        pos=findkeyM(((int) clave),*M);
-        if(pos==NULL){
-            printf("Se eliminó el bloque de memoria pero no el elemento de la lista\n");
-        }else{
-            deleteAtPositionM(pos,M);
-            printf("Se eliminó correctamente el bloque a eliminar\n");
+        printf("Se elimino correctamente el bloque a eliminar\n");
+        while(pos!=NULL){
+            pos=findkeyM(((int) clave),*M);
+            if(pos!=NULL){
+                deleteAtPositionM(pos,M);
+            }
         }
     }
 }
+
 
 void dopmap (void){ /*no arguments necessary*/
     pid_t etesech; /*ejecuta el comando externo pmap para */
