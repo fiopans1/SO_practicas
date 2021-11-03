@@ -220,7 +220,7 @@ void shared1(cadena trozos[], int n, tListM *M){
         }else if(strcmp(trozos[1],"-delkey")==0){
             args[0]=trozos[2];
             args[1]=NULL;
-            SharedDelkey(args,M);
+            SharedDelkey(args);
 
         }else{
             imprimir_shared(*M);
@@ -236,7 +236,7 @@ void shared1(cadena trozos[], int n, tListM *M){
         }else if(strcmp(trozos[1],"-delkey")==0){
             args[0]=trozos[2];
             args[1]=NULL;
-            SharedDelkey(args,M);
+            SharedDelkey(args);
 
         }else{
 
@@ -449,11 +449,10 @@ ssize_t LeerFichero (char *fich, void *p, ssize_t n){ /* le n bytes del fichero 
 
 /*********************************************************************/
 /*********************************************************************/
-void SharedDelkey (char *args[], tListM *M){/*arg[0] points to a str containing the key*/ //sirve para eliminar la zona de memoria compartida
+void SharedDelkey (char *args[]){/*arg[0] points to a str containing the key*/ //sirve para eliminar la zona de memoria compartida
     key_t clave;
     int id;
     char *key=args[0];
-    tPosM pos;
     if (key==NULL || (clave=(key_t) strtoul(key,NULL,10))==IPC_PRIVATE){//miramos que la clave no sea nula y que sea publica y no privada
         printf (" shared -delkey clave_valida\n");
         return;
@@ -464,12 +463,6 @@ void SharedDelkey (char *args[], tListM *M){/*arg[0] points to a str containing 
     }
     if (shmctl(id,IPC_RMID,NULL)==-1){  perror ("shmctl: imposible eliminar memoria compartida\n");}else{//se elimina la memoria compartida
         printf("Se elimino correctamente el bloque a eliminar\n");
-        while(pos!=NULL){
-            pos=findkeyM(((int) clave),*M);
-            if(pos!=NULL){
-                deleteAtPositionM(pos,M);
-            }
-        }
     }
 }
 
