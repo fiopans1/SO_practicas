@@ -299,7 +299,7 @@ void volcarmem(cadena trozos[],int n){
         printf("Volcando %d bytes desde la direccion %p\n",z,p);
         addr= (char *) p; //strtoull(trozos[1], NULL, 16);
         while(cntrl<z){
-        for(i=cntrl;i<(cntrl+25);i++){//solucionar bucle infinito
+        for(i=cntrl;i<(cntrl+25);i++){
             if(i<z){
             printf("%2c ",addr[i]);
             }
@@ -316,6 +316,39 @@ void volcarmem(cadena trozos[],int n){
 
 
     }
+}
+void llenarmemoria(cadena trozos[], int n){
+    void *p;
+    char *addr;
+    int caracter;
+    int k;
+    if(n==2){
+        p=(void*) strtoull(trozos[1], NULL, 16);
+        addr= (char *) p;
+        for(int i=0;i<128;i++){
+            addr[i]=0x41;
+        }
+
+    }else if(n==3){
+        p=(void*) strtoull(trozos[1], NULL, 16);
+        addr= (char *) p;
+        k= strtol(trozos[2], NULL, 10);
+        for(int i=0;i<k;i++){
+            addr[i]=0x41;
+        }
+
+    }else if(n>=4){
+        p=(void*) strtoull(trozos[1], NULL, 16);
+        addr= (char *) p;
+        k= strtol(trozos[2], NULL, 10);
+        caracter=(int) strtoull(trozos[3], NULL, 16);
+        for(int i=0;i<k;i++){
+            addr[i]=caracter;
+        }
+
+    }
+
+
 }
 
 

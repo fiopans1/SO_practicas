@@ -43,6 +43,7 @@ void dealloc(cadena trozos[], int n, tListM *M);
 void shared1(cadena trozos[], int n, tListM *M);
 void memoria(cadena trozos[], int n, tListM *M);
 void volcarmem(cadena trozos[],int n);
+void llenarmemoria(cadena trozos[], int n);
 //funciones secundarias:
 void obt_hora(char hora[]);
 bool isNumber2(cadena param1); 
