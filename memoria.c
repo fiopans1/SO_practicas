@@ -280,17 +280,17 @@ void memoria(cadena trozos[], int n, tListM *M){
 void volcarmem(cadena trozos[],int n){
     void *p;
     char *addr;
-    int z,i=0;
+    int z,i,j, cntrl=0;
     if(n==2){
         p=(void*) strtoull(trozos[1], NULL, 16);
         printf("Volcando 25 bytes desde la direccion %p\n",p);
         addr= (char *) p; //strtoull(trozos[1], NULL, 16);
-        for(int i=0;i<25;i++){
-            printf("%2c ",addr[i]);
+        for(int h=0;h<25;h++){
+            printf("%2c ",addr[h]);
         }
         printf("\n");
-        for(int i=0;i<25;i++){
-            printf("%2x ",addr[i]);
+        for(int j=0;j<25;j++){
+            printf("%2x ",addr[j]);
         }
         printf("\n");
     }else if(n>=3){
@@ -298,15 +298,20 @@ void volcarmem(cadena trozos[],int n){
         z=(int) strtol(trozos[2], NULL, 10);
         printf("Volcando %d bytes desde la direccion %p\n",z,p);
         addr= (char *) p; //strtoull(trozos[1], NULL, 16);
-        while(i<z){
-        for(i=i;i<25;i++){//solucionar bucle infinito
+        while(cntrl<z){
+        for(i=cntrl;i<(cntrl+25);i++){//solucionar bucle infinito
+            if(i<z){
             printf("%2c ",addr[i]);
+            }
         }
         printf("\n");
-        for(i=i;i<25;i++){
-            printf("%2x ",addr[i]);
+        for(j=cntrl;j<(cntrl+25);j++){
+            if(j<z){
+            printf("%2x ",addr[j]);
+            }
         }
         printf("\n");
+        cntrl=i;
         }
 
 
