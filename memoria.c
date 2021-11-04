@@ -244,6 +244,20 @@ void shared1(cadena trozos[], int n, tListM *M){
 
     }
 }
+void esreadwrite(cadena trozos[], int n){
+    if(n==1 || n==2 || n==3){
+        printf(RED "Necesitas introducir más parámetros\n" COLOR_RESET);
+    }else if(n>=5){
+        if(strcmp(trozos[1],"read")==0){
+            LeerFichero (trozos[2], (void*) strtoull(trozos[3], NULL, 16), (ssize_t) strtol(trozos[4], NULL, 10));
+        }else if(strcmp(trozos[1],"write")==0){
+
+        }else{
+
+        }
+    }
+
+}
 
 void memoria(cadena trozos[], int n, tListM *M){
     static int st1,st2,st3;

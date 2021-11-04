@@ -258,6 +258,8 @@ void procesarEntrada(cadena N, tList *L,tListM *M){//procesamos la entrada
                 volcarmem(trozos,n);
             }else if(strcmp(trozos[0],"llenarmem")==0){
                 llenarmemoria(trozos,n);
+            }else if(strcmp(trozos[0],"e-s")==0){
+                esreadwrite(trozos,n);
             }else{
                 printf(RED "This command doesn't exist\n" COLOR_RESET);
             }

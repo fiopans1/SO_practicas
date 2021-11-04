@@ -44,6 +44,7 @@ void shared1(cadena trozos[], int n, tListM *M);
 void memoria(cadena trozos[], int n, tListM *M);
 void volcarmem(cadena trozos[],int n);
 void llenarmemoria(cadena trozos[], int n);
+void esreadwrite(cadena trozos[], int n);
 //funciones secundarias:
 void obt_hora(char hora[]);
 bool isNumber2(cadena param1); 
@@ -55,5 +56,6 @@ void SharedCreate (char *arg[],tListM *M);
 void * MmapFichero (char * fichero, int protection, tListM *M);
 void Mmap (char *arg[], tListM *M);
 void SharedDelkey (char *args[]);
+ssize_t LeerFichero (char *fich, void *p, ssize_t n);
 void dopmap (void);
 #endif
