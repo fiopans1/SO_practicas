@@ -157,11 +157,18 @@ void dealloc(cadena trozos[], int n, tListM *M){
                         deleteAtPositionM(pos,M);                   
                     }
                 }else if(items.tipo==SHARED){//convertimos de int  a char
-                    //aux=malloc(sizeof(items.key));
-                    //sprintf(aux,"%d",items.key);
-                    //args[0]=aux;
-                    //RELLENAR CUANDO TENGAMOS SHARED -FREE
-                    //free(aux);
+                    if(pos==NULL){
+                        printf(RED "Esa clave no existe\n" COLOR_RESET);
+
+                    }else{
+                        items=getItemM(pos,*M);
+                        if(shmdt(items.dir_malloc)==0){
+                            deleteAtPositionM(pos,M);
+                            printf("Se desancló la clave de ese bloque de memoria correctamente\n");
+                        }else{
+                            perror("error");
+                        }
+                    }
 
                 }
             }
@@ -199,21 +206,53 @@ void dealloc(cadena trozos[], int n, tListM *M){
             }  
 
         }else if(strcmp(trozos[1],"-shared")==0){//caso shared
-            //RELLENAR CUANDO TENGAMOS SHARED -FREE
+            pos=findkeyM(((int)strtoul(trozos[2],NULL,10)),*M);
+            if(pos==NULL){
+                printf(RED "Esa clave no existe\n" COLOR_RESET);
+
+            }else{
+                items=getItemM(pos,*M);
+                if(shmdt(items.dir_malloc)==0){
+                    deleteAtPositionM(pos,M);
+                    printf("Se desancló la clave de ese bloque de memoria correctamente\n");
+                }else{
+                    perror("error");
+                }
+            }
         }
     }
 }
 
 void shared1(cadena trozos[], int n, tListM *M){
+    tItemM item;
+    tPosM pos;
     cadena args[2];
     if(n==1){
         imprimir_shared(*M);
     }else if(n==2){
-        if(ObtenerMemoriaShmget((key_t)strtoul(trozos[1],NULL,10),0,M)==NULL){
-            printf("Algo salió mal al intentar compartir memoria");
+        if(strcmp(trozos[1],"-free")!=0){
+            if(ObtenerMemoriaShmget((key_t)strtoul(trozos[1],NULL,10),0,M)==NULL){
+                printf("Algo salió mal al intentar compartir memoria\n");
+            }
+        }else{
+            imprimir_shared(*M);
         }
     }else if(n==3){
         if(strcmp(trozos[1],"-free")==0){
+            pos=findkeyM(((int)strtoul(trozos[2],NULL,10)),*M);
+            if(pos==NULL){
+                printf(RED "Esa clave no existe\n" COLOR_RESET);
+
+            }else{
+                item=getItemM(pos,*M);
+                if(shmdt(item.dir_malloc)==0){
+                    deleteAtPositionM(pos,M);
+                    printf("Se desancló la clave de ese bloque de memoria correctamente\n");
+                }else{
+                    perror("error");
+                }
+            }
+            
 
         }else if(strcmp(trozos[1],"-create")==0){
             imprimir_shared(*M);
@@ -239,7 +278,7 @@ void shared1(cadena trozos[], int n, tListM *M){
             SharedDelkey(args);
 
         }else{
-
+            imprimir_shared(*M);
         }
 
     }
@@ -249,9 +288,20 @@ void esreadwrite(cadena trozos[], int n){
         printf(RED "Necesitas introducir más parámetros\n" COLOR_RESET);
     }else if(n>=5){
         if(strcmp(trozos[1],"read")==0){
-            LeerFichero (trozos[2], (void*) strtoull(trozos[3], NULL, 16), (ssize_t) strtol(trozos[4], NULL, 10));
+            if(LeerFichero (trozos[2], (void*) strtoull(trozos[3], NULL, 16), (ssize_t) strtol(trozos[4], NULL, 10))==(ssize_t) strtol(trozos[4], NULL, 10)){
+                printf("Se leyeron correctamente %s bytes en %s\n", trozos[4], trozos[3]);
+            }
         }else if(strcmp(trozos[1],"write")==0){
-
+            if(n>=6 && strcmp(trozos[2],"-o")==0){
+                if(EscribirFichero (trozos[3], (void*) strtoull(trozos[4], NULL, 16), (ssize_t) strtol(trozos[5], NULL, 10), 1)==0){
+                    printf("Se sobreescribieron correctamente %s bytes de %s a %s\n", trozos[5],trozos[3], trozos[4]);
+                }
+            }else{
+                if(EscribirFichero (trozos[2], (void*) strtoull(trozos[3], NULL, 16), (ssize_t) strtol(trozos[4], NULL, 10), 0)==0){
+                    printf("Se escribieron correctamente %s bytes de %s a %s\n",trozos[4], trozos[2], trozos[3]);
+                }
+            }
+    
         }else{
 
         }
@@ -338,6 +388,7 @@ void llenarmemoria(cadena trozos[], int n){
     int k;
     if(n==2){
         p=(void*) strtoull(trozos[1], NULL, 16);
+        printf("Escribiendo 128 bytes en %p de 0x41\n", p);
         addr= (char *) p;
         for(int i=0;i<128;i++){
             addr[i]=0x41;
@@ -347,6 +398,7 @@ void llenarmemoria(cadena trozos[], int n){
         p=(void*) strtoull(trozos[1], NULL, 16);
         addr= (char *) p;
         k= strtol(trozos[2], NULL, 10);
+        printf("Escribiendo %d bytes en %p de 0x41\n",k, p);
         for(int i=0;i<k;i++){
             addr[i]=0x41;
         }
@@ -356,6 +408,7 @@ void llenarmemoria(cadena trozos[], int n){
         addr= (char *) p;
         k= strtol(trozos[2], NULL, 10);
         caracter=(int) strtoull(trozos[3], NULL, 16);
+        printf("Escribiendo %d bytes en %p de (%d en la tabla ascii)\n",k, p, caracter);
         for(int i=0;i<k;i++){
             addr[i]=caracter;
         }
@@ -493,11 +546,40 @@ ssize_t LeerFichero (char *fich, void *p, ssize_t n){ /* le n bytes del fichero 
         aux=errno;//juegan con el errno para que close no lo sobreescria
         close(df);
         errno=aux;
+        perror("error");
         return ((ssize_t)-1);//en caso de que no se pueda leer devuelve -1
     }
     close (df);
     return (nleidos);//en caso de que se pueda leer devuelve nleidos
 }//con nleidos tenemos el numero de bytes leidos y con *p tenemos los caracteres leidos.
+ssize_t EscribirFichero (char *fich, void *p, ssize_t n, int sobreescritura){ /* le n bytes del fichero fich en p */
+    ssize_t tam=n; /*si n==-1 escribe el fichero completo*/
+    int df, aux;
+    struct stat s;
+    if(sobreescritura==1){//sobreescribimos
+        unlink(fich);
+        if ( (df=open(fich,O_WRONLY | O_CREAT, S_IRWXU))==-1 || stat (fich,&s)==-1){//miramos que se pueda abrir el fichero perfectamente(abrimos el fichero como solo lectura)
+            return ((ssize_t)-1);
+        }
+    }else if(sobreescritura==0){//non sobreescribimos
+        if((df=open(fich,O_WRONLY | O_CREAT | O_APPEND, S_IRWXU))==-1 || stat (fich,&s)==-1){
+           return ((ssize_t)-1); 
+        }
+
+    }
+    /*if (n==LEERCOMPLETO){//si el tam es -1, entonces leemos todo el fichero
+        tam=(ssize_t) s.st_size;
+    }*/
+    if ((write(df,p, tam))==-1){//miramos que read devuelva el numero de palabras a nleidos, y en p tendremos los valores leidos para luego mostrar
+        aux=errno;//juegan con el errno para que close no lo sobreescria
+        close(df);
+        errno=aux;
+        perror("error");
+        return ((ssize_t)-1);//en caso de que no se pueda leer devuelve -1
+    }
+    close (df);
+    return ((ssize_t) 0);//en caso de que se pueda leer devuelve nleidos
+}
 
 /*********************************************************************/
 /*********************************************************************/

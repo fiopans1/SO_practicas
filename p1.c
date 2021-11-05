@@ -203,14 +203,7 @@ void procesarEntrada(cadena N, tList *L,tListM *M){//procesamos la entrada
                    printf(RED "This command doesn't exist\n" COLOR_RESET); 
                 }
             }else if(strcmp(trozos[0],"salir")==0 || strcmp(trozos[0],"fin")==0 || strcmp(trozos[0],"bye")==0){ //SALIR
-                for(tPosM p=*M; p!=NULL;p=nextM(p,*M)){
-                    if(p->data.tipo==MALLOC){
-                        free(p->data.dir_malloc);
-                    }else if(p->data.tipo==MMAP){
-                        munmap(p->data.dir_malloc, p->data.tam);
-                        close(p->data.key);
-                    }    //añadir caso mmap y caso share
-                }
+
                 for(int i=0;i<n;i++){
                     free(trozos[i]);
                 }

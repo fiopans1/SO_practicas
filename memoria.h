@@ -57,5 +57,6 @@ void * MmapFichero (char * fichero, int protection, tListM *M);
 void Mmap (char *arg[], tListM *M);
 void SharedDelkey (char *args[]);
 ssize_t LeerFichero (char *fich, void *p, ssize_t n);
+ssize_t EscribirFichero (char *fich, void *p, ssize_t n, int sobreescritura);
 void dopmap (void);
 #endif
