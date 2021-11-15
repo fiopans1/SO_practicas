@@ -29,6 +29,8 @@
 #include <dirent.h>
 #include "memoria.h"
 
+
+
 //
 //TIPOS DE DATOS Y VARIABLES
 #define MAX_PARAM 5
