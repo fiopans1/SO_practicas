@@ -12,6 +12,8 @@ void doRecursiva (int n){
         doRecursiva(n);
     }
 }
+
+
 void malloc1(cadena trozos[],int n,tListM *M){
     tItemM items;
     tPosM pos;
