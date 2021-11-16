@@ -433,8 +433,10 @@ void ayuda(cadena param1, int n){                  //AYUDA
     puts("********************");
     if(n==1 && param1==NULL) {//ayuda general
 
-       puts("->'ayuda [cmd]' donde cmd es uno de los siguientes comandos:\n- fin\t\t- salir\n- bye\t\t- carpeta\n- pid\t\t- autores\n- hist\t\t- comando\n- fecha\t\t- infosis");
-       puts("- ayuda\t\t- crear\n- borrar\t- borrarrec\n- listfich\t- listdir");
+       printf("->'ayuda [cmd]' donde cmd es uno de los siguientes comandos:\n- fin\t\t- salir\n- bye\t\t- carpeta\n- pid\t\t- autores\n- hist\t\t- comando\n- fecha\t\t- infosis\n");
+        printf("- ayuda\t\t- crear\n- borrar\t- borrarrec\n- listfich\t- listdir\n");
+       printf("- malloc\t- mmap\n- shared\t- dealloc\n- memoria\t- volcarmem\n- llenarmem\t- recursiva\n- e-s\n");
+
 
     }else if(n==2){//ayuda especifico
         if(strcmp(param1,"autores")==0){
@@ -466,6 +468,24 @@ void ayuda(cadena param1, int n){                  //AYUDA
             printf("borrar [name1 name2 ..]	 Borra ficheros o directorios vacios\n");
         }else if(strcmp(param1,"borrarrec")==0){
             printf("borrarrec [name1 name2 ..]	 Borra ficheros o directorios no vacios\n");
+        }else if(strcmp(param1,"malloc")==0){
+            printf("malloc [-free] tam	 asigna(o desasigna) memoria en el programa\n");
+        }else if(strcmp(param1,"mmap")==0){
+            printf("mmap [-free] fich prms	 mapea(o desmapea) ficheros en el espacio de direcciones del proceso\n");
+        }else if(strcmp(param1,"shared")==0){
+            printf("shared [-free|-create|-delkey] cl tam	 asigna(o desasigna) memoria compartida en el programa\n");
+        }else if(strcmp(param1,"dealloc")==0){
+            printf("dealloc -malloc|-shared|-mmap....	Desasigna un bloque de memoria asignado con malloc, shared o mmap\n");
+        }else if(strcmp(param1,"memoria")==0){
+            printf("memoria [-blocks|-funcs|-vars|-all|-pmap] ..	Muestra muestra detalles de la memoria del proceso\n");
+        }else if(strcmp(param1,"volcarmem")==0){
+            printf("volcarmem addr cont 	Vuelca en pantallas los contenidos (cont bytes) de la posicion de memoria addr\n");
+        }else if(strcmp(param1,"llenarmem")==0){
+            printf("llenarmem addr cont byte 	 Llena la memoria a partir de addr con byte\n");
+        }else if(strcmp(param1,"recursiva")==0){
+            printf("recursiva [n] 	Invoca a la funcion recursiva n veces\n");
+        }else if(strcmp(param1,"e-s")==0){
+            printf("e-s [read|write] [-o] fiche addr cont 	Invoca a la funcion recursiva n veces\n");
         }else{
             printf(RED "This command doesn't exist\n" COLOR_RESET);
         }
