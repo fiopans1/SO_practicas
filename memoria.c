@@ -338,6 +338,8 @@ void memoria(cadena trozos[], int n, tListM *M){
         }else if(strcmp(trozos[1],"-funcs")==0){
             printf("Funciones programa: %p %p %p\n", (void *) memoria,(void *) MmapFichero,(void *) ObtenerMemoriaShmget);
             printf("Funciones C: %p %p %p\n", (void *) shmget,(void *) malloc,(void *) free);
+        }else if(strcmp(trozos[1],"-blocks")==0){
+            imprimir_listacompleta(*M);
         }else if(strcmp(trozos[1],"-all")==0){
             printf("Estáticas: %p %p %p\n",&st1,&st2,&st3);
             printf("Locales: %p %p %p\n",&loc1,&loc2,&loc3);
