@@ -2,9 +2,8 @@
  * TITLE: P0 SISTEMAS OPERATIVOS
  * SUBTITLE: Practica 0
  * AUTHOR 1: Diego Suárez Ramos LOGIN 1: diego.suarez.ramos@udc.es
- * AUTHOR 2: Ander Varela Martin LOGIN 2: ander,varela@udc.es
+ * AUTHOR 2: Ander Varela Martin LOGIN 2: ander.varela@udc.es
  * GROUP: 2.3
- * DATE: 21/09/2021
  */
 //LISTA PARA EL HIST
 #ifndef DYNAMIC_LIST_H

@@ -1,10 +1,10 @@
 /*
- * TITLE: PROGRAMMING II LABS
- * SUBTITLE: Practical 1
- * AUTHOR 1: Diego Suárez Ramos LOGIN 1: diego.suarez.ramos
- * AUTHOR 2: Alejandro Ariza Abaña LOGIN 2: alejandro.ariza
- * GROUP: 1.3
- * DATE: 08/04/2021
+ * TITLE: P0 SISTEMAS OPERATIVOS
+ * SUBTITLE: Practica 0
+ * AUTHOR 1: Diego Suárez Ramos LOGIN 1: diego.suarez.ramos@udc.es
+ * AUTHOR 2: Ander Varela Martin LOGIN 2: ander.varela@udc.es
+ * GROUP: 2.3
+ * DATE: 21/09/2021
  */
 
 #include "memoria_list.h"
