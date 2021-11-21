@@ -7,6 +7,36 @@
  * DATE: 21/09/2021
  */
 #include "procesos.h"
+//FUNCIONES PRACTICA __PROCESOS
+
+void priority(cadena trozos[], int n){
+    pid_t id;
+    int prio;
+    if(n==1){
+        id=getpid();
+        if((prio=getpriority(PRIO_PROCESS,id))==-1){
+            perror("error");
+        }else{
+            printf("Prioridad del proceso %d es %d\n", (int) id, prio);
+        }
+    }else if(n==2){
+        id= strtol(trozos[1],NULL,10);
+        if((prio=getpriority(PRIO_PROCESS,id))==-1){
+            perror("error");
+        }else{
+            printf("Prioridad del proceso %d es %d\n", (int) id, prio);
+        }
+    }else if(n>=3){
+        id= strtol(trozos[1],NULL,10);
+        prio= strtol(trozos[2],NULL,10);
+        if(setpriority(PRIO_PROCESS,id,prio)==-1){
+            perror("error");
+        }else{
+            printf("Se estableció la prioridad del proceso %d en %d\n", (int) id, prio);
+        }
+
+    }
+}
 
 //FUNCIONES QUE NOS DAN:
 void MostrarEntorno (char **entorno, char * nombre_entorno){
@@ -84,8 +114,8 @@ since we last checked
 }*/
 
 /******************************SENALES ******************************************/
-
-int Senal(char * sen){ /*devuel el numero de senial a partir del nombre*/
+/*
+int Senal(char * sen){ //devuel el numero de senial a partir del nombre
 
     int i;
     for (i=0; sigstrnum[i].nombre!=NULL; i++)
@@ -93,11 +123,11 @@ int Senal(char * sen){ /*devuel el numero de senial a partir del nombre*/
             return sigstrnum[i].senal;
     return -1;
 }
-char *NombreSenal(int sen){ /*devuelve el nombre senal a partir de la senal*/
- /* para sitios donde no hay sig2str*/
+char *NombreSenal(int sen){ //devuelve el nombre senal a partir de la senal
+ // para sitios donde no hay sig2str
     int i;
     for (i=0; sigstrnum[i].nombre!=NULL; i++)
         if (sen==sigstrnum[i].senal)
             return sigstrnum[i].nombre;
     return ("SIGUNKNOWN");
-}
+}*/

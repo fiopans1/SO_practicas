@@ -29,12 +29,22 @@
 #include "memoria_list.h"
 #include <sys/wait.h>
 #include <signal.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 #define MAXVAR 0
+#define RED "\x1b[31m"
+#define GREEN "\x1b[32m"
+#define BLUE "\x1b[34m"
+#define COLOR_RESET "\x1b[0m"
+typedef char *cadena;
+
+
 struct SEN{
     char *nombre;
     int senal;
 };
+/*
 static struct SEN sigstrnum[]={
 "HUP", SIGHUP,
 "INT", SIGINT,
@@ -66,7 +76,7 @@ static struct SEN sigstrnum[]={
 "WINCH", SIGWINCH,
 "IO", SIGIO,
 "SYS", SIGSYS,
-/*senales que no hay en todas partes*/
+//senales que no hay en todas partes
 #ifdef SIGPOLL
 "POLL", SIGPOLL,
 #endif
@@ -104,6 +114,9 @@ static struct SEN sigstrnum[]={
 "WAITING", SIGWAITING,
 #endif
 NULL,-1,
-}; /*fin array sigstrnum */
+}; //fin array sigstrnum
+*/
+//FUNCIONES:
+void priority(cadena trozos[], int n);
 
 #endif

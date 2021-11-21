@@ -257,6 +257,8 @@ void procesarEntrada(cadena N, tList *L,tListM *M){//procesamos la entrada
                 llenarmemoria(trozos,n);
             }else if(strcmp(trozos[0],"e-s")==0){
                 esreadwrite(trozos,n);
+            }else if(strcmp(trozos[0],"priority")==0){
+                priority(trozos,n);
             }else{
                 printf(RED "This command doesn't exist\n" COLOR_RESET);
             }
