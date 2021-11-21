@@ -2,7 +2,7 @@
 #
 #
 all:
-	gcc -o p2 p2.c memoria.c memoria_list.c -g -Wall
+	gcc -o p2 p2.c memoria.c memoria_list.c list_procesos.c procesos.c -g -Wall
 	
 
 clean:

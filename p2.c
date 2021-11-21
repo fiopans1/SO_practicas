@@ -28,6 +28,8 @@
 #include <grp.h>
 #include <dirent.h>
 #include "memoria.h"
+#include "list_procesos.h"
+#include "procesos.h"
 
 
 
