@@ -32,12 +32,14 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
-#define MAXVAR 0
+#define MAXVAR 256
 #define RED "\x1b[31m"
 #define GREEN "\x1b[32m"
 #define BLUE "\x1b[34m"
 #define COLOR_RESET "\x1b[0m"
 typedef char *cadena;
+int oldfd;
+extern char ** environ;
 
 
 struct SEN{
@@ -118,5 +120,12 @@ NULL,-1,
 */
 //FUNCIONES:
 void priority(cadena trozos[], int n);
+void rederr(cadena trozos[], int n);
+void entorno(cadena trozos[], int n, char *env[]);
+void mostrarvar(cadena trozos[],int n, char *env[]);
 
+//FUNCIONES QUE NOS DAN:
+void MostrarEntorno (char **entorno, char * nombre_entorno);
+int BuscarVariable (char * var, char *e[]);
+int CambiarVariable(char * var, char * valor, char *e[]);
 #endif

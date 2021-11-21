@@ -37,6 +37,108 @@ void priority(cadena trozos[], int n){
 
     }
 }
+void rederr(cadena trozos[], int n){//PROXIMAMENTE
+    int n1;
+    if(n==1){
+        if(oldfd!=0){
+
+        }else{
+
+        }
+    }else if(n>=2){//FUNCIONA
+        if(strcmp(trozos[1],"-reset")==0){//funciona
+            close(2);
+            dup(oldfd);
+            close(oldfd);
+        }else{//NO FUNCIONA
+            oldfd=dup(2);
+            close(2);
+            n1=open (trozos[1],O_WRONLY | O_CREAT | O_APPEND,0600);
+            printf("%d\n",n1);
+        }
+
+    }
+}
+void entorno(cadena trozos[], int n, char *env[]){
+    if(n==1){
+        MostrarEntorno(env,"main arg3");
+
+    }else if(n>=2){
+        if(strcmp(trozos[1],"-environ")==0){
+            MostrarEntorno(environ,"env");
+        }else if(strcmp(trozos[1],"-addr")==0){
+            printf ("===========================================================\n");
+            printf("environ: %p (almacenado en %p)\n",environ, &environ);
+            printf("main arg3: %p (almacenado en %p)\n",env, &env);
+            printf ("===========================================================\n");
+
+        }else{
+            printf(RED "Uso: entorno [-environ|-addr]\n" COLOR_RESET);
+        }
+
+    }
+}
+void mostrarvar(cadena trozos[],int n, char *env[]){
+    int pos;
+    cadena punt;
+    if(n==1){
+        MostrarEntorno(env,"main arg3");
+    }else if(n>=2){
+        if((pos=BuscarVariable (trozos[1],env))==-1){
+            perror("error");
+            return;
+        }else{
+            printf("Con arg3 main: %s(%p) @%p\n", env[pos], env[pos], &env);
+        }
+        if((pos=BuscarVariable (trozos[1],environ))==-1){
+            perror("error");
+            return;
+        }else{
+            printf("Con environ: %s(%p) @%p\n", environ[pos], environ[pos], &environ);
+        }
+        if((punt=getenv(trozos[1]))==NULL){
+            errno=ENOENT;
+            perror("error");
+            return;
+        }else{
+            printf("Con getenv: %s(%p)\n",punt,punt);
+        }
+
+    }
+}
+void cambiarvar(cadena trozos[], int n, char *env[]){
+    cadena aux;
+    if(n<4){
+       printf(RED "Uso: cambiarvar [-a|-e|-p] var valor\n" COLOR_RESET); 
+    }else if(n>=4){
+        if(strcmp(trozos[1],"-a")==0){
+            if(CambiarVariable(trozos[2],trozos[3],env)==-1){
+                printf(RED "No se pudo cambiar la varible\n" COLOR_RESET);
+
+            }else{
+                printf("Se cambió el valor de %s a %s a través del 3 argumento de main\n",trozos[2], trozos[3]);
+            }
+
+        }else if(strcmp(trozos[1],"-e")==0){
+            if(CambiarVariable(trozos[2],trozos[3],environ)==-1){
+                printf(RED "No se pudo cambiar la varible\n" COLOR_RESET);
+
+            }else{
+                printf("Se cambió el valor de %s a %s a través de environ\n",trozos[2], trozos[3]);
+            }
+        }else if(strcmp(trozos[1],"-p")==0){
+                strcpy(aux,trozos[2]);
+                strcat(aux,"=");
+                strcat(aux,trozos[3]);
+                if(putenv(aux)==-1){
+                    printf(RED "No se pudo cambiar la varible\n" COLOR_RESET);
+                }else{
+                    printf("Se cambió el valor de %s a %s a través de environ\n",trozos[2], trozos[3]);
+                }
+            }
+        }
+    }
+}
 
 //FUNCIONES QUE NOS DAN:
 void MostrarEntorno (char **entorno, char * nombre_entorno){
@@ -62,7 +164,6 @@ int BuscarVariable (char * var, char *e[]){
     errno=ENOENT; /*no hay tal variable*/
     return(-1);
 }
-
 int CambiarVariable(char * var, char * valor, char *e[]){
     int pos;
     char *aux;
@@ -97,7 +198,7 @@ void MostrarUidsProceso (void){
 void CambiarUidLogin (char * login){
     uid_t uid;
     if ((uid=UidUsuario(login))==(uid_t) -1){
-        printf("loin no valido: %s\n", login);
+        printf("login no valido: %s\n", login);
         return;
     }
     if (setuid(uid)==.1)

@@ -48,8 +48,8 @@ typedef char *cadena;
 //CABECERAS P0
 void imprimirPrompt();
 void leerEntrada(cadena N);
-void procesarEntrada(cadena N,tList *L,tListM *M);
-void readtask();
+void procesarEntrada(cadena N,tList *L,tListM *M, char *env[]);
+void readtask(char *env[]);
 void crearfichero();
 void autores(cadena param1, int n);
 void pid(cadena param1, int n);
@@ -57,7 +57,7 @@ void carpeta(cadena param1, int n);
 void fecha(cadena param1, int n);
 void infosis();
 void hist(cadena param1, tList *L, int n);
-void comandoN(cadena param1,tList L, int n,tListM *M);
+void comandoN(cadena param1,tList L, int n,tListM *M, char *env[]);
 void ayuda(cadena param1, int n);
 int TrocearCadena(char * cadena, char * trozos[]);
 //CABECERAS P1
@@ -80,11 +80,11 @@ void borrar1_directorios(cadena directorio);
 
 
 //EMPIEZA EL CODIGO
-int main(){
-readtask();
+int main(int argc, char * argv[], char *env[]){
+readtask(env);
 return 0;
 }
-void readtask(){//funcion general
+void readtask(char *env[]){//funcion general
     bool terminado;
     cadena N;
     tList L;
@@ -98,7 +98,7 @@ void readtask(){//funcion general
     while(!terminado){
         imprimirPrompt();
         leerEntrada(N);
-        procesarEntrada(N, &L, &M);
+        procesarEntrada(N, &L, &M, env);
     }
     free(N);
     }else{
@@ -115,7 +115,7 @@ void leerEntrada(cadena N){//leemos el stdin
     }
     fflush(stdin);
 }
-void procesarEntrada(cadena N, tList *L,tListM *M){//procesamos la entrada
+void procesarEntrada(cadena N, tList *L,tListM *M,char *env[]){//procesamos la entrada
     //COSAS DE LISTA Y VARIABLES
     tItemL informacion;
     char *trozos[MAX_PALABRAS];//reservamos memoria par 200 palabras, si se introducen mas de 200 el programa peta
@@ -185,9 +185,9 @@ void procesarEntrada(cadena N, tList *L,tListM *M){//procesamos la entrada
                 }
             }else if(strcmp(trozos[0],"comando")==0){ //COMANDO
                 if(n==2){
-                    comandoN(trozos[1],*L,n, M);
+                    comandoN(trozos[1],*L,n, M, env);
                 }else if(n==1){
-                    comandoN(NULL,*L,n, M);
+                    comandoN(NULL,*L,n, M, env);
                 }else{
                    printf(RED "This command doesn't exist\n" COLOR_RESET); 
                 }
@@ -259,6 +259,13 @@ void procesarEntrada(cadena N, tList *L,tListM *M){//procesamos la entrada
                 esreadwrite(trozos,n);
             }else if(strcmp(trozos[0],"priority")==0){
                 priority(trozos,n);
+            }else if(strcmp(trozos[0],"rederr")==0){  
+                rederr(trozos,n);          
+            }else if(strcmp(trozos[0],"entorno")==0){ 
+                entorno(trozos,n, env);
+            }else if(strcmp(trozos[0],"mostrarvar")==0){ 
+                mostrarvar(trozos,n,env);
+
             }else{
                 printf(RED "This command doesn't exist\n" COLOR_RESET);
             }
@@ -398,7 +405,7 @@ void hist(cadena param1, tList *L, int z) {        //HIST
     }
     puts("********************");
 }
-void comandoN(cadena param1,tList L, int z,tListM *M){       //COMANDO N
+void comandoN(cadena param1,tList L, int z,tListM *M, char *env[]){       //COMANDO N
     if(z==2 && isNumber(param1)){//comando N
     //tPosL p;
     tItemL items;
@@ -409,7 +416,7 @@ void comandoN(cadena param1,tList L, int z,tListM *M){       //COMANDO N
         if(pos!=LNULL){
             items= getItem(pos,L);
             printf("%d - %s\n", items.numcode, items.command);
-            procesarEntrada(items.command, &L,M);
+            procesarEntrada(items.command, &L,M, env);
         }else{
             printf(RED "-> No se encontro el comando en el historial\n" COLOR_RESET);
         }
