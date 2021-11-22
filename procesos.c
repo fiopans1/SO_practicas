@@ -85,21 +85,19 @@ void mostrarvar(cadena trozos[],int n, char *env[]){
         MostrarEntorno(env,"main arg3");
     }else if(n>=2){
         if((pos=BuscarVariable (trozos[1],env))==-1){
-            perror("error");
-            return;
+            perror("Con env:");
         }else{
             printf("Con arg3 main: %s(%p) @%p\n", env[pos], env[pos], &env);
         }
         if((pos=BuscarVariable (trozos[1],environ))==-1){
-            perror("error");
+            perror("Con environ:");
             return;
         }else{
             printf("Con environ: %s(%p) @%p\n", environ[pos], environ[pos], &environ);
         }
         if((punt=getenv(trozos[1]))==NULL){
             errno=ENOENT;
-            perror("error");
-            return;
+            perror("Con getenv");
         }else{
             printf("Con getenv: %s(%p)\n",punt,punt);
         }
@@ -127,15 +125,50 @@ void cambiarvar(cadena trozos[], int n, char *env[]){
                 printf("Se cambió el valor de %s a %s a través de environ\n",trozos[2], trozos[3]);
             }
         }else if(strcmp(trozos[1],"-p")==0){
+            if ((aux=(char *)malloc(strlen(trozos[2])+strlen(trozos[3])+2))==NULL){
+                perror("error");
+            }else{
                 strcpy(aux,trozos[2]);
                 strcat(aux,"=");
                 strcat(aux,trozos[3]);
+                strcat(aux,"\0");
                 if(putenv(aux)==-1){
                     printf(RED "No se pudo cambiar la varible\n" COLOR_RESET);
                 }else{
-                    printf("Se cambió el valor de %s a %s a través de environ\n",trozos[2], trozos[3]);
+                    printf("Se cambió el valor de %s a %s a través de putenv\n",trozos[2], trozos[3]);
                 }
+                free(aux);
             }
+        }
+    }
+}
+void uid1(cadena trozos[], int n){
+    if(n==1){
+        MostrarUidsProceso();
+    }else if(n>=2){
+        if(strcmp(trozos[1],"-get")==0){
+            MostrarUidsProceso();
+        }else if(strcmp(trozos[1],"-set")==0){
+            if(n==2){
+                MostrarUidsProceso();
+            }else{
+                if(n==3){
+                    if(strcmp(trozos[2],"-l")==0){
+                        MostrarUidsProceso();
+                    }else{
+                        CambiarUidLogin2(trozos[2]);
+
+                    }
+                }else if(n>=4){
+                    if(strcmp(trozos[2],"-l")==0){
+                        CambiarUidLogin1(trozos[3]);
+                    }else{
+                        CambiarUidLogin2(trozos[2]);
+                    }
+                }
+
+            }
+
         }
     }
 }
@@ -175,14 +208,16 @@ int CambiarVariable(char * var, char * valor, char *e[]){
     strcat(aux,"=");
     strcat(aux,valor);
     e[pos]=aux;
+    free(aux);
     return (pos);
+
 }
 //************************************************************************************
 char * NombreUsuario (uid_t uid){
     struct passwd *p;
-        if ((p=getpwuid(uid))==NULL)
-    return (" ??????");
-        return p->pw_name;
+    if ((p=getpwuid(uid))==NULL)
+        return (" ??????");
+    return p->pw_name;
 }
 uid_t UidUsuario (char * nombre){
     struct passwd *p;
@@ -195,13 +230,24 @@ void MostrarUidsProceso (void){
     printf ("Credencial real: %d, (%s)\n", real, NombreUsuario (real));
     printf ("Credencial efectiva: %d, (%s)\n", efec, NombreUsuario (efec));
 }
-void CambiarUidLogin (char * login){
+void CambiarUidLogin1 (char * login){
     uid_t uid;
     if ((uid=UidUsuario(login))==(uid_t) -1){
         printf("login no valido: %s\n", login);
         return;
     }
-    if (setuid(uid)==.1)
+    if (setuid(uid)==-1)
+        printf ("Imposible cambiar credencial: %s\n", strerror(errno));
+}
+void CambiarUidLogin2 (char * idlogin){
+    uid_t uid;
+    char *login;
+    uid=(uid_t) strtol(idlogin,NULL,10);
+    if (strcmp((login=NombreUsuario(uid))," ??????")==0){
+        printf("Usuario no valido: %d\n", uid);
+        return;
+    }
+    if (setuid(uid)==-1)
         printf ("Imposible cambiar credencial: %s\n", strerror(errno));
 }
 

@@ -123,9 +123,15 @@ void priority(cadena trozos[], int n);
 void rederr(cadena trozos[], int n);
 void entorno(cadena trozos[], int n, char *env[]);
 void mostrarvar(cadena trozos[],int n, char *env[]);
-
+void cambiarvar(cadena trozos[], int n, char *env[]);
+void uid1(cadena trozos[], int n);
 //FUNCIONES QUE NOS DAN:
 void MostrarEntorno (char **entorno, char * nombre_entorno);
 int BuscarVariable (char * var, char *e[]);
 int CambiarVariable(char * var, char * valor, char *e[]);
+char * NombreUsuario (uid_t uid);
+uid_t UidUsuario (char * nombre);
+void MostrarUidsProceso (void);
+void CambiarUidLogin1 (char * login);
+void CambiarUidLogin2 (char * idlogin);
 #endif
