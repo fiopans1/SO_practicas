@@ -50,11 +50,16 @@ void rederr(cadena trozos[], int n){//PROXIMAMENTE
             close(2);
             dup(oldfd);
             close(oldfd);
-        }else{//NO FUNCIONA
+        }else{//abrir antes, cerrar stderr y luego hacer el dup FUNCIONA!!!
+            /*oldfd=dup(2);
+            close(2);
+            n1=open (trozos[1],O_WRONLY | O_CREAT | O_APPEND,0600);
+            printf("%d\n",n1);*/
             oldfd=dup(2);
             close(2);
             n1=open (trozos[1],O_WRONLY | O_CREAT | O_APPEND,0600);
-            printf("%d\n",n1);
+            dup(2);
+            
         }
 
     }
