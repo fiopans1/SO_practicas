@@ -268,7 +268,12 @@ void procesarEntrada(cadena N, tList *L,tListM *M,char *env[]){//procesamos la e
             }else if(strcmp(trozos[0],"cambiarvar")==0){ 
                 cambiarvar(trozos,n,env);
             }else if(strcmp(trozos[0],"uid")==0){   
-                uid1(trozos,n);              
+                uid1(trozos,n); 
+            }else if(strcmp(trozos[0],"fork")==0){
+                fork1();    
+            }else if(strcmp(trozos[0],"ejec")==0){
+                ejec(trozos,n);
+
             }else{
                 printf(RED "This command doesn't exist\n" COLOR_RESET);
             }

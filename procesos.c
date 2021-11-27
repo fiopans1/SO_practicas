@@ -38,7 +38,6 @@ void priority(cadena trozos[], int n){
     }
 }
 void rederr(cadena trozos[], int n){//PROXIMAMENTE
-    int n1;
     if(n==1){
         if(oldfd!=0){
 
@@ -55,10 +54,10 @@ void rederr(cadena trozos[], int n){//PROXIMAMENTE
             close(2);
             n1=open (trozos[1],O_WRONLY | O_CREAT | O_APPEND,0600);
             printf("%d\n",n1);*/
-            oldfd=dup(2);
-            close(2);
-            n1=open (trozos[1],O_WRONLY | O_CREAT | O_APPEND,0600);
-            dup(2);
+            oldfd=dup(STDERR_FILENO);
+            close(STDERR_FILENO);
+            open (trozos[1],O_WRONLY | O_CREAT | O_APPEND,0600);
+            dup(STDERR_FILENO);
             
         }
 
@@ -175,6 +174,40 @@ void uid1(cadena trozos[], int n){
             }
 
         }
+    }
+}
+/*    pid_t etesech; ejecuta el comando externo pmap para 
+    char elpepe[32]; pasandole el pid del proceso actual 
+    char *argv[3]={"pmap",elpepe,NULL};
+    sprintf (elpepe,"%d", (int) getpid());
+    if ((etesech=fork())==-1){
+        perror ("Imposible crear proceso");
+        return;
+    }
+    if (etesech==0){
+        if (execvp(argv[0],argv)==-1){perror("cannot execute pmap");}
+        exit(1);
+    }
+    waitpid (etesech,NULL,0);
+}*/
+void fork1(){
+    pid_t id;
+    if((id=fork())==-1){
+        perror("error");
+    }else if(id>0){
+        waitpid (id,NULL,0);
+    }else{
+        printf("EJECUTANDO PROCESO %d\n",getpid());
+    }
+}
+void ejec(cadena trozos[], int n){
+    pid_t id;
+    if((id=fork())==-1){
+        perror("error");
+    }else if(id>0){
+        waitpid (id,NULL,0);
+    }else{
+        execvp("/bin/sh",trozos);
     }
 }
 
