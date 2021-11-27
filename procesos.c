@@ -200,14 +200,40 @@ void fork1(){
         printf("EJECUTANDO PROCESO %d\n",getpid());
     }
 }
-void ejec(cadena trozos[], int n){
-    pid_t id;
-    if((id=fork())==-1){
-        perror("error");
-    }else if(id>0){
-        waitpid (id,NULL,0);
+void fg(cadena trozos[], int n){//funcion para segundo plano
+    if(n>=2){
+        pid_t id;
+        cadena argv[n];
+        for(int i=1;i<n;i++){
+            argv[i-1]=trozos[i];
+        }
+        argv[n-1]=NULL;
+        if((id=fork())==-1){
+            perror("error");
+        }else if(id>0){
+            waitpid (id,NULL,0);
+        }else if(id==0){
+            if(execvp(argv[0], argv)==-1){
+                perror("error");
+            }
+            exit(0);
+        }
     }else{
-        execvp("/bin/sh",trozos);
+        printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
+    }
+}
+void ejec(cadena trozos[], int n){
+    if(n>=2){
+        cadena argv[n];
+        for(int i=1;i<n;i++){
+            argv[i-1]=trozos[i];
+        }
+        argv[n-1]=NULL;
+        if(execvp(argv[0], argv)==-1){
+            perror("error");
+        }
+    }else{
+        printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
     }
 }
 
