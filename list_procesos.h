@@ -14,17 +14,26 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#define TAM_M 256
+#define VACIA 0
+#define ERR -1
+#define TERM 1
+#define SIGNAL 2
+#define ACTIVO 0
+#define PARADO 1
+#define TERMINADO 2
+
 /* Definicion de tipos */
 #define LNULL NULL //DEFINIMOS UN LNULL PORQUE EN EL CODIGO PRINCIPAL NO TIENEN QUE SABER DE QUE MANERA LO IMPLEMENTAMOS
 typedef struct tNodeP *tPosP;//aquí enlazamos unas con otras
 typedef int elemento;
 typedef struct{
-    void* dir_malloc;
-    int key;
-    char nome_ficheiro[256];
-    unsigned long int tam;
-    char hora[256];
-    int tipo;
+    pid_t pid;
+    int prioridad;
+    char comando[TAM_M];
+    char hora[TAM_M];
+    int estado;
+    int final;
 }tItemP;
 struct tNodeP {
     tItemP data;

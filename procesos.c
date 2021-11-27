@@ -7,6 +7,7 @@
  * DATE: 21/09/2021
  */
 #include "procesos.h"
+
 //FUNCIONES PRACTICA __PROCESOS
 
 void priority(cadena trozos[], int n){
@@ -251,7 +252,35 @@ void fg(cadena trozos[], int n){//funcion para segundo plano
     }
 }
 void fgprio(cadena trozos[], int n){//funcion para segundo plano
+    if(n>=3){
+        pid_t id;
+        int prio= strtol(trozos[1],NULL,10);
+        cadena argv[n-1];
+        for(int i=2;i<n;i++){
+            argv[i-2]=trozos[i];
+        }
+        argv[n-2]=NULL;
+        if((id=fork())==-1){
+            perror("error");
+        }else if(id>0){
+            waitpid (id,NULL,0);
+        }else if(id==0){
+            if(setpriority(PRIO_PROCESS,id,prio)==-1){
+                perror("error");
+            }else{            
+                if(execvp(argv[0], argv)==-1){
+                    perror("error");
+                }
+                exit(0);
+            }
+        }
+    }else{
+        printf(RED "Debe poner el nombre del programa a ejecutar y la prioridad\\n" COLOR_RESET);
+    }
+}
+void back(cadena trozos[], int n,tListP *P){//funcion para segundo plano
     if(n>=2){
+        tItemP item;
         pid_t id;
         cadena argv[n];
         for(int i=1;i<n;i++){
@@ -261,7 +290,20 @@ void fgprio(cadena trozos[], int n){//funcion para segundo plano
         if((id=fork())==-1){
             perror("error");
         }else if(id>0){
-            waitpid (id,NULL,0);
+            item.pid=id;
+            obt_hora1(item.hora);
+            item.estado=ACTIVO;
+            item.final=000;
+            for(int i=0;i<n;i++){
+                if(argv[i]!=NULL){
+                    strcpy(item.comando,argv[i]);
+                }
+                if(i!=(n-1)){
+                    strcpy(item.comando," ");
+                }
+            }
+            insertItemP(item,NULL,P);
+
         }else if(id==0){
             if(execvp(argv[0], argv)==-1){
                 perror("error");
@@ -377,3 +419,9 @@ char *NombreSenal(int sen){ //devuelve el nombre senal a partir de la senal
             return sigstrnum[i].nombre;
     return ("SIGUNKNOWN");
 }*/
+//FUNCIONES AUXILIARES
+void obt_hora1(char hora[]){
+    time_t now;
+    time(&now);
+    strcpy(hora,ctime(&now));
+}

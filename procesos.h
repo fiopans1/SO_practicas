@@ -26,11 +26,11 @@
 #include <dirent.h>
 #include <sys/ipc.h>
 #include <sys/mman.h>
-#include "memoria_list.h"
 #include <sys/wait.h>
 #include <signal.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#include "list_procesos.h"
 
 #define MAXVAR 256
 #define RED "\x1b[31m"
@@ -129,6 +129,8 @@ void fork1();
 void ejec(cadena trozos[], int n);
 void ejecprio(cadena trozos[], int n);
 void fg(cadena trozos[], int n);
+void fgprio(cadena trozos[], int n);
+void back(cadena trozos[], int n,tListP *P);
 
 //FUNCIONES QUE NOS DAN:
 void MostrarEntorno (char **entorno, char * nombre_entorno);
@@ -139,4 +141,6 @@ uid_t UidUsuario (char * nombre);
 void MostrarUidsProceso (void);
 void CambiarUidLogin1 (char * login);
 void CambiarUidLogin2 (char * idlogin);
+//FUNCIONES AUXILIARES
+void obt_hora1(char hora[]);
 #endif

@@ -28,7 +28,6 @@
 #include <grp.h>
 #include <dirent.h>
 #include "memoria.h"
-#include "list_procesos.h"
 #include "procesos.h"
 
 
@@ -48,7 +47,7 @@ typedef char *cadena;
 //CABECERAS P0
 void imprimirPrompt();
 void leerEntrada(cadena N);
-void procesarEntrada(cadena N,tList *L,tListM *M, char *env[]);
+void procesarEntrada(cadena N,tList *L,tListM *M, char *env[], tListP *P);
 void readtask(char *env[]);
 void crearfichero();
 void autores(cadena param1, int n);
@@ -57,7 +56,7 @@ void carpeta(cadena param1, int n);
 void fecha(cadena param1, int n);
 void infosis();
 void hist(cadena param1, tList *L, int n);
-void comandoN(cadena param1,tList L, int n,tListM *M, char *env[]);
+void comandoN(cadena param1,tList L, int n,tListM *M, char *env[],  tListP *P);
 void ayuda(cadena param1, int n);
 int TrocearCadena(char * cadena, char * trozos[]);
 //CABECERAS P1
@@ -89,8 +88,10 @@ void readtask(char *env[]){//funcion general
     cadena N;
     tList L;
     tListM M;
+    tListP P;
     createList(&L);
     createEmptyListM(&M);
+    createEmptyListP(&P);
     //reservamos memoria para N
     N=malloc(200*sizeof(char));
     terminado=false;
@@ -98,7 +99,7 @@ void readtask(char *env[]){//funcion general
     while(!terminado){
         imprimirPrompt();
         leerEntrada(N);
-        procesarEntrada(N, &L, &M, env);
+        procesarEntrada(N, &L, &M, env, &P);
     }
     free(N);
     }else{
@@ -115,7 +116,7 @@ void leerEntrada(cadena N){//leemos el stdin
     }
     fflush(stdin);
 }
-void procesarEntrada(cadena N, tList *L,tListM *M,char *env[]){//procesamos la entrada
+void procesarEntrada(cadena N, tList *L,tListM *M,char *env[],  tListP *P){//procesamos la entrada
     //COSAS DE LISTA Y VARIABLES
     tItemL informacion;
     char *trozos[MAX_PALABRAS];//reservamos memoria par 200 palabras, si se introducen mas de 200 el programa peta
@@ -185,9 +186,9 @@ void procesarEntrada(cadena N, tList *L,tListM *M,char *env[]){//procesamos la e
                 }
             }else if(strcmp(trozos[0],"comando")==0){ //COMANDO
                 if(n==2){
-                    comandoN(trozos[1],*L,n, M, env);
+                    comandoN(trozos[1],*L,n, M, env,P);
                 }else if(n==1){
-                    comandoN(NULL,*L,n, M, env);
+                    comandoN(NULL,*L,n, M, env, P);
                 }else{
                    printf(RED "This command doesn't exist\n" COLOR_RESET); 
                 }
@@ -277,6 +278,10 @@ void procesarEntrada(cadena N, tList *L,tListM *M,char *env[]){//procesamos la e
                 fg(trozos,n);
             }else if(strcmp(trozos[0],"ejecprio")==0){
                 ejecprio(trozos,n);
+            }else if(strcmp(trozos[0],"fgprio")==0){
+                fgprio(trozos,n);
+            }else if(strcmp(trozos[0],"back")==0){
+                back(trozos,n,P);
             }else{
                 printf(RED "This command doesn't exist\n" COLOR_RESET);
             }
@@ -416,7 +421,7 @@ void hist(cadena param1, tList *L, int z) {        //HIST
     }
     puts("********************");
 }
-void comandoN(cadena param1,tList L, int z,tListM *M, char *env[]){       //COMANDO N
+void comandoN(cadena param1,tList L, int z,tListM *M, char *env[],  tListP *P){       //COMANDO N
     if(z==2 && isNumber(param1)){//comando N
     //tPosL p;
     tItemL items;
@@ -427,7 +432,7 @@ void comandoN(cadena param1,tList L, int z,tListM *M, char *env[]){       //COMA
         if(pos!=LNULL){
             items= getItem(pos,L);
             printf("%d - %s\n", items.numcode, items.command);
-            procesarEntrada(items.command, &L,M, env);
+            procesarEntrada(items.command, &L,M, env, P);
         }else{
             printf(RED "-> No se encontro el comando en el historial\n" COLOR_RESET);
         }
