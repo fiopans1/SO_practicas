@@ -176,20 +176,6 @@ void uid1(cadena trozos[], int n){
         }
     }
 }
-/*    pid_t etesech; ejecuta el comando externo pmap para 
-    char elpepe[32]; pasandole el pid del proceso actual 
-    char *argv[3]={"pmap",elpepe,NULL};
-    sprintf (elpepe,"%d", (int) getpid());
-    if ((etesech=fork())==-1){
-        perror ("Imposible crear proceso");
-        return;
-    }
-    if (etesech==0){
-        if (execvp(argv[0],argv)==-1){perror("cannot execute pmap");}
-        exit(1);
-    }
-    waitpid (etesech,NULL,0);
-}*/
 void fork1(){
     pid_t id;
     if((id=fork())==-1){
@@ -198,6 +184,48 @@ void fork1(){
         waitpid (id,NULL,0);
     }else{
         printf("EJECUTANDO PROCESO %d\n",getpid());
+    }
+}
+void ejec(cadena trozos[], int n){
+    if(n>=2){
+        cadena argv[n];
+        for(int i=1;i<n;i++){
+            argv[i-1]=trozos[i];
+        }
+        argv[n-1]=NULL;
+        if(execvp(argv[0], argv)==-1){
+            perror("error");
+        }
+    }else{
+        printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
+    }
+}
+/*        id= strtol(trozos[1],NULL,10);
+        prio= strtol(trozos[2],NULL,10);
+        if(setpriority(PRIO_PROCESS,id,prio)==-1){
+            perror("error");
+        }else{
+            printf("Se estableció la prioridad del proceso %d en %d\n", (int) id, prio);
+        }
+*/
+void ejecprio(cadena trozos[], int n){
+    if(n>=3){
+        pid_t id=getpid();
+        int prio= strtol(trozos[1],NULL,10);
+        cadena argv[n-1];
+        for(int i=2;i<n;i++){
+            argv[i-2]=trozos[i];
+        }
+        argv[n-2]=NULL;
+        if(setpriority(PRIO_PROCESS,id,prio)==-1){
+            perror("error");
+        }else{
+            if(execvp(argv[0], argv)==-1){
+                perror("error");
+            }
+        }
+    }else{
+        printf(RED "Debe poner el nombre del programa a ejecutar y la prioridad\n" COLOR_RESET);
     }
 }
 void fg(cadena trozos[], int n){//funcion para segundo plano
@@ -222,21 +250,28 @@ void fg(cadena trozos[], int n){//funcion para segundo plano
         printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
     }
 }
-void ejec(cadena trozos[], int n){
+void fgprio(cadena trozos[], int n){//funcion para segundo plano
     if(n>=2){
+        pid_t id;
         cadena argv[n];
         for(int i=1;i<n;i++){
             argv[i-1]=trozos[i];
         }
         argv[n-1]=NULL;
-        if(execvp(argv[0], argv)==-1){
+        if((id=fork())==-1){
             perror("error");
+        }else if(id>0){
+            waitpid (id,NULL,0);
+        }else if(id==0){
+            if(execvp(argv[0], argv)==-1){
+                perror("error");
+            }
+            exit(0);
         }
     }else{
         printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
     }
 }
-
 //FUNCIONES QUE NOS DAN:
 void MostrarEntorno (char **entorno, char * nombre_entorno){
     int i=0;

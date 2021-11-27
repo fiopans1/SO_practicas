@@ -275,7 +275,8 @@ void procesarEntrada(cadena N, tList *L,tListM *M,char *env[]){//procesamos la e
                 ejec(trozos,n);
             }else if(strcmp(trozos[0],"fg")==0){
                 fg(trozos,n);
-
+            }else if(strcmp(trozos[0],"ejecprio")==0){
+                ejecprio(trozos,n);
             }else{
                 printf(RED "This command doesn't exist\n" COLOR_RESET);
             }

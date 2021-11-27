@@ -127,7 +127,9 @@ void cambiarvar(cadena trozos[], int n, char *env[]);
 void uid1(cadena trozos[], int n);
 void fork1();
 void ejec(cadena trozos[], int n);
+void ejecprio(cadena trozos[], int n);
 void fg(cadena trozos[], int n);
+
 //FUNCIONES QUE NOS DAN:
 void MostrarEntorno (char **entorno, char * nombre_entorno);
 int BuscarVariable (char * var, char *e[]);
