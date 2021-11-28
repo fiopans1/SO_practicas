@@ -259,3 +259,31 @@ void listar_p(tListP P){
         pos=nextP(pos,P);
     }
 }
+
+tPosP findpid(int pid, tListP L){
+
+    //declaramos la variable "p" que recorrerá la lista
+    tItemP item;
+    tPosP p;
+    for(p=L;(p!=NULL);p=p->next){
+        item=getItemP(p,L);
+        if(item.pid==pid){
+            return p;
+        }
+    }
+    
+    return p;
+
+}
+void listar_item(tItemP item){
+    for(int i=0;i<strlen(item.hora);i++){if(item.hora[i]=='\n'){item.hora[i]=' ';}}
+    printf("%d %s p=%d %s ",item.pid,item.user,item.prioridad,item.hora);
+    if(item.estado==TERMINADO){
+        printf("TERMINADO ");
+    }else if(item.estado==PARADO){
+        printf("PARADO ");
+    }else{
+        printf("ACTIVO ");
+    }
+    printf("(%d) %s\n",item.final, item.comando);
+}

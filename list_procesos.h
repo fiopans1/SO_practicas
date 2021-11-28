@@ -71,4 +71,6 @@ bool createNodeP(tPosP *p);
 void deleteListP(tListP *L);
 void actualizar_list(tListP *P);
 void listar_p(tListP P);
+tPosP findpid(int pid, tListP L);
+void listar_item(tItemP item);
 #endif

@@ -293,6 +293,8 @@ void procesarEntrada(cadena N, tList *L,tListM *M,char *env[],  tListP *P){//pro
                 fgas(trozos,n);
             }else if(strcmp(trozos[0],"bgas")==0){
                 backas(trozos,n,P,N2);
+            }else if(strcmp(trozos[0],"job")==0){
+                job(trozos,n,P);
             }else if(strcmp(trozos[n-1],"&")==0){
                 back1(trozos,n,P,N2);
             }else{

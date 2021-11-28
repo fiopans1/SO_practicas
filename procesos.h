@@ -65,6 +65,7 @@ void fgas(cadena trozos[], int n);
 void backas(cadena trozos[], int n,tListP *P,char cad[]);
 void back1(cadena trozos[], int n,tListP *P,char cad[]);
 void fg1(cadena trozos[], int n);
+void job(cadena trozos[], int n, tListP *P);
 
 //FUNCIONES QUE NOS DAN:
 void MostrarEntorno (char **entorno, char * nombre_entorno);

@@ -404,6 +404,31 @@ void backprio(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segund
         printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
     }
 }
+void job(cadena trozos[], int n, tListP *P){
+    if(n==1){
+        listjobs(P);
+    }else if(n>=2){
+        int pid;
+        if(n==2){
+            if(strcmp(trozos[1],"-fg")==0){
+                listjobs(P);
+            }else{
+                pid= strtol(trozos[1],NULL,10);
+                listar_item(getItemP(findpid(pid, *P),*P));
+            }
+        }else if(n>=3){
+            if(strcmp(trozos[1],"-fg")){
+                pid= strtol(trozos[2],NULL,10);
+                waitpid (pid,NULL,0);
+            }else{
+                pid= strtol(trozos[1],NULL,10);
+                listar_item(getItemP(findpid(pid, *P),*P));
+            }  
+        }
+    }
+
+
+}
 void ejecas(cadena trozos[], int n){
     if(n>=3){
         cadena argv[n-1];
@@ -420,6 +445,7 @@ void ejecas(cadena trozos[], int n){
         printf(RED "Debe poner el nombre del programa a ejecutar y el login\n" COLOR_RESET);
     }
 }
+
 void fgas(cadena trozos[], int n){//funcion para segundo plano
     if(n>=3){
         pid_t id;
