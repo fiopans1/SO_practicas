@@ -278,8 +278,23 @@ void fgprio(cadena trozos[], int n){//funcion para segundo plano
         printf(RED "Debe poner el nombre del programa a ejecutar y la prioridad\\n" COLOR_RESET);
     }
 }
-void back(cadena trozos[], int n,tListP *P){//funcion para segundo plano
+/*int TrocearCadena(char * cadena, char * trozos[]){ //troceamos la cadena en palabras
+    int i=1;
+    if ((trozos[0]=strtok(cadena," \n\t"))==NULL){
+        return 0;
+    }
+    while ((trozos[i]=strtok(NULL," \n\t"))!=NULL){
+        i++;
+        
+    }
+        
+    return i;
+}*/
+void back(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segundo plano
     if(n>=2){
+        char * trozos1;
+        bool t=false;
+        for(int i=0;i<strlen(cad);i++){if(cad[i]==' ' && !t){trozos1=&cad[i];t=true;}}//cambiar por break
         tItemP item;
         pid_t id;
         cadena argv[n];
@@ -291,17 +306,12 @@ void back(cadena trozos[], int n,tListP *P){//funcion para segundo plano
             perror("error");
         }else if(id>0){
             item.pid=id;
+            item.prioridad=getpriority(PRIO_PROCESS,id);
             obt_hora1(item.hora);
+            strcpy(item.user,NombreUsuario(getuid()));
             item.estado=ACTIVO;
             item.final=000;
-            for(int i=0;i<n;i++){
-                if(argv[i]!=NULL){
-                    strcpy(item.comando,argv[i]);
-                }
-                if(i!=(n-1)){
-                    strcpy(item.comando," ");
-                }
-            }
+            strcpy(item.comando,trozos1);
             insertItemP(item,NULL,P);
 
         }else if(id==0){
@@ -313,6 +323,52 @@ void back(cadena trozos[], int n,tListP *P){//funcion para segundo plano
     }else{
         printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
     }
+}
+
+void backprio(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segundo plano
+    if(n>=3){
+        char * trozos1;
+        bool t=false;
+        int j=0;
+        for(int i=0;i<strlen(cad);i++){if(cad[i]==' ' && !t && j==1){trozos1=&cad[i];t=true;}else if(cad[i]==' '){j++;}}//cambiar por break
+
+        tItemP item;
+        pid_t id;
+        int prio= strtol(trozos[1],NULL,10);
+        cadena argv[n-1];
+        for(int i=2;i<n;i++){
+            argv[i-2]=trozos[i];
+        }
+        argv[n-2]=NULL;
+        if((id=fork())==-1){
+            perror("error");
+        }else if(id>0){
+            item.pid=id;
+            item.prioridad=getpriority(PRIO_PROCESS,id);
+            obt_hora1(item.hora);
+            strcpy(item.user,NombreUsuario(getuid()));
+            item.estado=ACTIVO;
+            item.final=000;
+            strcpy(item.comando,trozos1);
+            insertItemP(item,NULL,P);
+
+        }else if(id==0){
+            if(setpriority(PRIO_PROCESS,id,prio)==-1){
+                perror("error");
+            }else{            
+                if(execvp(argv[0], argv)==-1){
+                    perror("error");
+                }
+                exit(0);
+            }
+        }
+    }else{
+        printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
+    }
+}
+void listjobs(tListP *P){
+    actualizar_list(P);
+    listar_p(*P);
 }
 //FUNCIONES QUE NOS DAN:
 void MostrarEntorno (char **entorno, char * nombre_entorno){
@@ -392,33 +448,7 @@ void CambiarUidLogin2 (char * idlogin){
         printf ("Imposible cambiar credencial: %s\n", strerror(errno));
 }
 
-/*PUEDE SER IMPORTANTE:
-if (waitpid (pid,&valor, WNOHANG |WUNTRACED |WIFCONTINUED)==pid){
-the integer valor contains info on the status of process pid
-}
-else {
-the integer valor contains NO VALID INFORMATION, process state has not changed
-since we last checked 
-}*/
 
-/******************************SENALES ******************************************/
-/*
-int Senal(char * sen){ //devuel el numero de senial a partir del nombre
-
-    int i;
-    for (i=0; sigstrnum[i].nombre!=NULL; i++)
-        if (!strcmp(sen, sigstrnum[i].nombre))
-            return sigstrnum[i].senal;
-    return -1;
-}
-char *NombreSenal(int sen){ //devuelve el nombre senal a partir de la senal
- // para sitios donde no hay sig2str
-    int i;
-    for (i=0; sigstrnum[i].nombre!=NULL; i++)
-        if (sen==sigstrnum[i].senal)
-            return sigstrnum[i].nombre;
-    return ("SIGUNKNOWN");
-}*/
 //FUNCIONES AUXILIARES
 void obt_hora1(char hora[]){
     time_t now;

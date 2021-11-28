@@ -11,9 +11,19 @@
 
 
 #include <stdio.h>
-#include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <signal.h>
+#include <time.h>
+#include <sys/types.h>
+#include <errno.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <sys/resource.h>
+#include <sys/time.h>
+#include <pwd.h>
+#include <sys/utsname.h>
 #define TAM_M 256
 #define VACIA 0
 #define ERR -1
@@ -22,7 +32,10 @@
 #define ACTIVO 0
 #define PARADO 1
 #define TERMINADO 2
-
+struct SEN{
+    char *nombre;
+    int senal;
+};
 /* Definicion de tipos */
 #define LNULL NULL //DEFINIMOS UN LNULL PORQUE EN EL CODIGO PRINCIPAL NO TIENEN QUE SABER DE QUE MANERA LO IMPLEMENTAMOS
 typedef struct tNodeP *tPosP;//aquí enlazamos unas con otras
@@ -30,6 +43,7 @@ typedef int elemento;
 typedef struct{
     pid_t pid;
     int prioridad;
+    char user[TAM_M];
     char comando[TAM_M];
     char hora[TAM_M];
     int estado;
@@ -55,4 +69,6 @@ tPosP previousP(tPosP, tListP);
 tPosP nextP(tPosP, tListP);
 bool createNodeP(tPosP *p);
 void deleteListP(tListP *L);
+void actualizar_list(tListP *P);
+void listar_p(tListP P);
 #endif

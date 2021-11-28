@@ -214,6 +214,7 @@ void procesarEntrada(cadena N, tList *L,tListM *M,char *env[],  tListP *P){//pro
                 }
                 deleteList(L);
                 deleteListM(M);
+                deleteListP(P);
                 exit(1);
             }else if(strcmp(trozos[0],"crear")==0){
                 crear(trozos,n);
@@ -276,12 +277,16 @@ void procesarEntrada(cadena N, tList *L,tListM *M,char *env[],  tListP *P){//pro
                 ejec(trozos,n);
             }else if(strcmp(trozos[0],"fg")==0){
                 fg(trozos,n);
-            }else if(strcmp(trozos[0],"ejecprio")==0){
+            }else if(strcmp(trozos[0],"ejecpri")==0){
                 ejecprio(trozos,n);
-            }else if(strcmp(trozos[0],"fgprio")==0){
+            }else if(strcmp(trozos[0],"fgpri")==0){
                 fgprio(trozos,n);
             }else if(strcmp(trozos[0],"back")==0){
-                back(trozos,n,P);
+                back(trozos,n,P,N2);
+            }else if(strcmp(trozos[0],"backpri")==0){
+                backprio(trozos,n,P,N2);
+            }else if(strcmp(trozos[0],"listjobs")==0){
+                listjobs(P);
             }else{
                 printf(RED "This command doesn't exist\n" COLOR_RESET);
             }
