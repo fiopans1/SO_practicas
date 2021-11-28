@@ -278,18 +278,6 @@ void fgprio(cadena trozos[], int n){//funcion para segundo plano
         printf(RED "Debe poner el nombre del programa a ejecutar y la prioridad\\n" COLOR_RESET);
     }
 }
-/*int TrocearCadena(char * cadena, char * trozos[]){ //troceamos la cadena en palabras
-    int i=1;
-    if ((trozos[0]=strtok(cadena," \n\t"))==NULL){
-        return 0;
-    }
-    while ((trozos[i]=strtok(NULL," \n\t"))!=NULL){
-        i++;
-        
-    }
-        
-    return i;
-}*/
 void back(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segundo plano
     if(n>=2){
         char * trozos1;
@@ -366,6 +354,90 @@ void backprio(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segund
         printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
     }
 }
+void ejecas(cadena trozos[], int n){
+    if(n>=3){
+        cadena argv[n-1];
+        for(int i=2;i<n;i++){
+            argv[i-2]=trozos[i];
+        }
+        argv[n-2]=NULL;
+        if(CambiarUidLogin1(trozos[1])==-1){
+            perror("error");
+        }else{
+            if(execvp(argv[0], argv)==-1){
+                perror("error");
+            }
+        }
+    }else{
+        printf(RED "Debe poner el nombre del programa a ejecutar y el login\n" COLOR_RESET);
+    }
+}
+void fgas(cadena trozos[], int n){//funcion para segundo plano
+    if(n>=3){
+        pid_t id;
+        cadena argv[n-1];
+        for(int i=2;i<n;i++){
+            argv[i-2]=trozos[i];
+        }
+        argv[n-2]=NULL;
+        if((id=fork())==-1){
+            perror("error");
+        }else if(id>0){
+            waitpid (id,NULL,0);
+        }else if(id==0){
+            if(CambiarUidLogin1(trozos[1])==-1){
+                perror("error");
+            }else{            
+                if(execvp(argv[0], argv)==-1){
+                    perror("error");
+                }
+                exit(0);
+            }
+        }
+    }else{
+        printf(RED "Debe poner el nombre del programa a ejecutar y el login\\n" COLOR_RESET);
+    }
+}
+void backas(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segundo plano
+    if(n>=3){
+        char * trozos1;
+        bool t=false;
+        int j=0;
+        for(int i=0;i<strlen(cad);i++){if(cad[i]==' ' && !t && j==1){trozos1=&cad[i];t=true;}else if(cad[i]==' '){j++;}}//cambiar por break
+
+        tItemP item;
+        pid_t id;
+        cadena argv[n-1];
+        for(int i=2;i<n;i++){
+            argv[i-2]=trozos[i];
+        }
+        argv[n-2]=NULL;
+        if((id=fork())==-1){
+            perror("error");
+        }else if(id>0){
+            item.pid=id;
+            item.prioridad=getpriority(PRIO_PROCESS,id);
+            obt_hora1(item.hora);
+            strcpy(item.user,trozos[1]);
+            item.estado=ACTIVO;
+            item.final=000;
+            strcpy(item.comando,trozos1);
+            insertItemP(item,NULL,P);
+
+        }else if(id==0){
+            if(CambiarUidLogin1(trozos[1])==-1){
+                perror("error");
+            }else{            
+                if(execvp(argv[0], argv)==-1){
+                    perror("error");
+                }
+                exit(0);
+            }
+        }
+    }else{
+        printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
+    }
+}
 void listjobs(tListP *P){
     actualizar_list(P);
     listar_p(*P);
@@ -427,25 +499,31 @@ void MostrarUidsProceso (void){
     printf ("Credencial real: %d, (%s)\n", real, NombreUsuario (real));
     printf ("Credencial efectiva: %d, (%s)\n", efec, NombreUsuario (efec));
 }
-void CambiarUidLogin1 (char * login){
+int CambiarUidLogin1 (char * login){
     uid_t uid;
     if ((uid=UidUsuario(login))==(uid_t) -1){
         printf("login no valido: %s\n", login);
-        return;
+        return -1;
     }
-    if (setuid(uid)==-1)
+    if (setuid(uid)==-1){
         printf ("Imposible cambiar credencial: %s\n", strerror(errno));
+        return -1;
+    }
+    return 0;
 }
-void CambiarUidLogin2 (char * idlogin){
+int CambiarUidLogin2 (char * idlogin){
     uid_t uid;
     char *login;
     uid=(uid_t) strtol(idlogin,NULL,10);
     if (strcmp((login=NombreUsuario(uid))," ??????")==0){
         printf("Usuario no valido: %d\n", uid);
-        return;
+        return -1;
     }
-    if (setuid(uid)==-1)
+    if (setuid(uid)==-1){
         printf ("Imposible cambiar credencial: %s\n", strerror(errno));
+        return -1;
+    }
+    return 0;
 }
 
 

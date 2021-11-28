@@ -60,6 +60,9 @@ void fgprio(cadena trozos[], int n);
 void back(cadena trozos[], int n,tListP *P,char cad[]);
 void backprio(cadena trozos[], int n,tListP *P,char cad[]);
 void listjobs(tListP *P);
+void ejecas(cadena trozos[], int n);
+void fgas(cadena trozos[], int n);
+void backas(cadena trozos[], int n,tListP *P,char cad[]);
 
 //FUNCIONES QUE NOS DAN:
 void MostrarEntorno (char **entorno, char * nombre_entorno);
@@ -68,8 +71,8 @@ int CambiarVariable(char * var, char * valor, char *e[]);
 char * NombreUsuario (uid_t uid);
 uid_t UidUsuario (char * nombre);
 void MostrarUidsProceso (void);
-void CambiarUidLogin1 (char * login);
-void CambiarUidLogin2 (char * idlogin);
+int CambiarUidLogin1 (char * login);
+int CambiarUidLogin2 (char * idlogin);
 //FUNCIONES AUXILIARES
 void obt_hora1(char hora[]);
 #endif

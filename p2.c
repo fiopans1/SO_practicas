@@ -287,6 +287,12 @@ void procesarEntrada(cadena N, tList *L,tListM *M,char *env[],  tListP *P){//pro
                 backprio(trozos,n,P,N2);
             }else if(strcmp(trozos[0],"listjobs")==0){
                 listjobs(P);
+            }else if(strcmp(trozos[0],"ejecas")==0){
+                ejecas(trozos,n);
+            }else if(strcmp(trozos[0],"fgas")==0){
+                fgas(trozos,n);
+            }else if(strcmp(trozos[0],"bgas")==0){
+                backas(trozos,n,P,N2);
             }else{
                 printf(RED "This command doesn't exist\n" COLOR_RESET);
             }
