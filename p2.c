@@ -293,8 +293,10 @@ void procesarEntrada(cadena N, tList *L,tListM *M,char *env[],  tListP *P){//pro
                 fgas(trozos,n);
             }else if(strcmp(trozos[0],"bgas")==0){
                 backas(trozos,n,P,N2);
+            }else if(strcmp(trozos[n-1],"&")==0){
+                back1(trozos,n,P,N2);
             }else{
-                printf(RED "This command doesn't exist\n" COLOR_RESET);
+                fg1(trozos,n);
             }
     }
 }

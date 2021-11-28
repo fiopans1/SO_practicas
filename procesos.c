@@ -251,8 +251,29 @@ void fg(cadena trozos[], int n){//funcion para segundo plano
         printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
     }
 }
+void fg1(cadena trozos[], int n){//funcion para segundo plano
+    if(n>=1){
+        pid_t id;
+        cadena argv[n+1];
+        for(int i=0;i<n;i++){
+            argv[i]=trozos[i];
+        }
+        argv[n]=NULL;
+        if((id=fork())==-1){
+            perror("error");
+        }else if(id>0){
+            waitpid (id,NULL,0);
+        }else if(id==0){
+            if(execvp(argv[0], argv)==-1){
+                perror("error");
+            }
+            exit(0);
+        }
+    }else{
+        printf(RED "Introduzca algún comando\n" COLOR_RESET);
+    }
+}
 void fgprio(cadena trozos[], int n){//funcion para segundo plano
-    if(n>=3){
         pid_t id;
         int prio= strtol(trozos[1],NULL,10);
         cadena argv[n-1];
@@ -274,9 +295,6 @@ void fgprio(cadena trozos[], int n){//funcion para segundo plano
                 exit(0);
             }
         }
-    }else{
-        printf(RED "Debe poner el nombre del programa a ejecutar y la prioridad\\n" COLOR_RESET);
-    }
 }
 void back(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segundo plano
     if(n>=2){
@@ -288,6 +306,38 @@ void back(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segundo pl
         cadena argv[n];
         for(int i=1;i<n;i++){
             argv[i-1]=trozos[i];
+        }
+        argv[n-1]=NULL;
+        if((id=fork())==-1){
+            perror("error");
+        }else if(id>0){
+            item.pid=id;
+            item.prioridad=getpriority(PRIO_PROCESS,id);
+            obt_hora1(item.hora);
+            strcpy(item.user,NombreUsuario(getuid()));
+            item.estado=ACTIVO;
+            item.final=000;
+            strcpy(item.comando,trozos1);
+            insertItemP(item,NULL,P);
+
+        }else if(id==0){
+            if(execvp(argv[0], argv)==-1){
+                perror("error");
+            }
+            exit(0);
+        }
+    }else{
+        printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
+    }
+}
+void back1(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segundo plano
+    if(n>=2){
+        char * trozos1=strtok(cad,"&");
+        tItemP item;
+        pid_t id;
+        cadena argv[n];
+        for(int i=0;i<(n-1);i++){
+            argv[i]=trozos[i];
         }
         argv[n-1]=NULL;
         if((id=fork())==-1){
