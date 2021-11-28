@@ -292,8 +292,8 @@ void fgprio(cadena trozos[], int n){//funcion para segundo plano
                 if(execvp(argv[0], argv)==-1){
                     perror("error");
                 }
-                exit(0);
             }
+            exit(0);
         }
 }
 void back(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segundo plano
@@ -397,8 +397,8 @@ void backprio(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segund
                 if(execvp(argv[0], argv)==-1){
                     perror("error");
                 }
-                exit(0);
             }
+            exit(0);
         }
     }else{
         printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
@@ -411,9 +411,7 @@ void ejecas(cadena trozos[], int n){
             argv[i-2]=trozos[i];
         }
         argv[n-2]=NULL;
-        if(CambiarUidLogin1(trozos[1])==-1){
-            perror("error");
-        }else{
+        if(CambiarUidLogin1(trozos[1])!=-1){
             if(execvp(argv[0], argv)==-1){
                 perror("error");
             }
@@ -435,14 +433,13 @@ void fgas(cadena trozos[], int n){//funcion para segundo plano
         }else if(id>0){
             waitpid (id,NULL,0);
         }else if(id==0){
-            if(CambiarUidLogin1(trozos[1])==-1){
-                perror("error");
-            }else{            
+            if(CambiarUidLogin1(trozos[1])!=-1){
                 if(execvp(argv[0], argv)==-1){
                     perror("error");
                 }
-                exit(0);
+                
             }
+            exit(0);
         }
     }else{
         printf(RED "Debe poner el nombre del programa a ejecutar y el login\\n" COLOR_RESET);
@@ -475,14 +472,12 @@ void backas(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segundo 
             insertItemP(item,NULL,P);
 
         }else if(id==0){
-            if(CambiarUidLogin1(trozos[1])==-1){
-                perror("error");
-            }else{            
+            if(CambiarUidLogin1(trozos[1])!=-1){           
                 if(execvp(argv[0], argv)==-1){
                     perror("error");
                 }
-                exit(0);
             }
+            exit(0);
         }
     }else{
         printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
