@@ -296,11 +296,9 @@ void borrartem(tListP *P){
         item=getItemP(pos,*P);
         if(item.estado==TERMINADO && item.final!=Senal1("TERM")){
             deleteAtPositionP(pos,P);
-            if(pos!=firstP){
-                pos=previousP(pos,*P);
-            }
+        }else{
+            pos=nextP(pos,*P);
         }
-        pos=nextP(pos,*P);
     }
 }
 void borrarsig(tListP *P){
@@ -312,10 +310,8 @@ void borrarsig(tListP *P){
         item=getItemP(pos,*P);
         if(item.estado==TERMINADO && item.final==Senal1("TERM")){
             deleteAtPositionP(pos,P);
-            if(pos!=firstP){
-                pos=previousP(pos,*P);
-            }
+        }else{
+            pos=nextP(pos,*P);
         }
-        pos=nextP(pos,*P);
     }
 }
