@@ -21,21 +21,28 @@ void priority(cadena trozos[], int n){
             printf("Prioridad del proceso %d es %d\n", (int) id, prio);
         }
     }else if(n==2){
-        id= strtol(trozos[1],NULL,10);
-        if((prio=getpriority(PRIO_PROCESS,id))==-1){
-            perror("error");
+        if(isNumber3(trozos[1])){
+            id= strtol(trozos[1],NULL,10);
+            if((prio=getpriority(PRIO_PROCESS,id))==-1){
+                perror("error");
+            }else{
+                printf("Prioridad del proceso %d es %d\n", (int) id, prio);
+            }
         }else{
-            printf("Prioridad del proceso %d es %d\n", (int) id, prio);
+            printf(RED "Ponga un numero valido\n" COLOR_RESET);
         }
     }else if(n>=3){
-        id= strtol(trozos[1],NULL,10);
-        prio= strtol(trozos[2],NULL,10);
-        if(setpriority(PRIO_PROCESS,id,prio)==-1){
-            perror("error");
+        if(isNumber3(trozos[1]) && isNumber3(trozos[2])){
+            id= strtol(trozos[1],NULL,10);
+            prio= strtol(trozos[2],NULL,10);
+            if(setpriority(PRIO_PROCESS,id,prio)==-1){
+                perror("error");
+            }else{
+                printf("Se estableció la prioridad del proceso %d en %d\n", (int) id, prio);
+            }
         }else{
-            printf("Se estableció la prioridad del proceso %d en %d\n", (int) id, prio);
+            printf(RED "Ponga un numero valido\n" COLOR_RESET);
         }
-
     }
 }
 void rederr(cadena trozos[], int n){//PROXIMAMENTE
@@ -201,29 +208,26 @@ void ejec(cadena trozos[], int n){
         printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
     }
 }
-/*        id= strtol(trozos[1],NULL,10);
-        prio= strtol(trozos[2],NULL,10);
-        if(setpriority(PRIO_PROCESS,id,prio)==-1){
-            perror("error");
-        }else{
-            printf("Se estableció la prioridad del proceso %d en %d\n", (int) id, prio);
-        }
-*/
+
 void ejecprio(cadena trozos[], int n){
     if(n>=3){
         pid_t id=getpid();
-        int prio= strtol(trozos[1],NULL,10);
-        cadena argv[n-1];
-        for(int i=2;i<n;i++){
-            argv[i-2]=trozos[i];
-        }
-        argv[n-2]=NULL;
-        if(setpriority(PRIO_PROCESS,id,prio)==-1){
-            perror("error");
-        }else{
-            if(execvp(argv[0], argv)==-1){
-                perror("error");
+        if(isNumber3(trozos[1])){
+            int prio= strtol(trozos[1],NULL,10);
+            cadena argv[n-1];
+            for(int i=2;i<n;i++){
+                argv[i-2]=trozos[i];
             }
+            argv[n-2]=NULL;
+            if(setpriority(PRIO_PROCESS,id,prio)==-1){
+                perror("error");
+            }else{
+                if(execvp(argv[0], argv)==-1){
+                    perror("error");
+                }
+            }
+        }else{
+            printf(RED "Ponga un numero valido\n" COLOR_RESET);
         }
     }else{
         printf(RED "Debe poner el nombre del programa a ejecutar y la prioridad\n" COLOR_RESET);
@@ -274,27 +278,35 @@ void fg1(cadena trozos[], int n){//funcion para segundo plano
     }
 }
 void fgprio(cadena trozos[], int n){//funcion para segundo plano
+    if(n>=3){
         pid_t id;
-        int prio= strtol(trozos[1],NULL,10);
-        cadena argv[n-1];
-        for(int i=2;i<n;i++){
-            argv[i-2]=trozos[i];
-        }
-        argv[n-2]=NULL;
-        if((id=fork())==-1){
-            perror("error");
-        }else if(id>0){
-            waitpid (id,NULL,0);
-        }else if(id==0){
-            if(setpriority(PRIO_PROCESS,id,prio)==-1){
-                perror("error");
-            }else{            
-                if(execvp(argv[0], argv)==-1){
-                    perror("error");
-                }
+        if(isNumber3(trozos[1])){
+            int prio= strtol(trozos[1],NULL,10);
+            cadena argv[n-1];
+            for(int i=2;i<n;i++){
+                argv[i-2]=trozos[i];
             }
-            exit(0);
+            argv[n-2]=NULL;
+            if((id=fork())==-1){
+                perror("error");
+            }else if(id>0){
+                waitpid (id,NULL,0);
+            }else if(id==0){
+                if(setpriority(PRIO_PROCESS,id,prio)==-1){
+                    perror("error");
+                }else{            
+                    if(execvp(argv[0], argv)==-1){
+                        perror("error");
+                    }
+                }
+                exit(0);
+            }
+        }else{
+            printf(RED "Ponga un numero valido\n" COLOR_RESET);
         }
+    }else{
+        printf(RED "Debe poner el nombre del programa a ejecutar y la prioridad\n" COLOR_RESET);
+    }
 }
 void back(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segundo plano
     if(n>=2){
@@ -372,36 +384,40 @@ void backprio(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segund
 
         tItemP item;
         pid_t id;
-        int prio= strtol(trozos[1],NULL,10);
-        cadena argv[n-1];
-        for(int i=2;i<n;i++){
-            argv[i-2]=trozos[i];
-        }
-        argv[n-2]=NULL;
-        if((id=fork())==-1){
-            perror("error");
-        }else if(id>0){
-            item.pid=id;
-            item.prioridad=getpriority(PRIO_PROCESS,id);
-            obt_hora1(item.hora);
-            strcpy(item.user,NombreUsuario(getuid()));
-            item.estado=ACTIVO;
-            item.final=000;
-            strcpy(item.comando,trozos1);
-            insertItemP(item,NULL,P);
-
-        }else if(id==0){
-            if(setpriority(PRIO_PROCESS,id,prio)==-1){
-                perror("error");
-            }else{            
-                if(execvp(argv[0], argv)==-1){
-                    perror("error");
-                }
+        if(isNumber3(trozos[1])){
+            int prio= strtol(trozos[1],NULL,10);
+            cadena argv[n-1];
+            for(int i=2;i<n;i++){
+                argv[i-2]=trozos[i];
             }
-            exit(0);
+            argv[n-2]=NULL;
+            if((id=fork())==-1){
+                perror("error");
+            }else if(id>0){
+                item.pid=id;
+                item.prioridad=getpriority(PRIO_PROCESS,id);
+                obt_hora1(item.hora);
+                strcpy(item.user,NombreUsuario(getuid()));
+                item.estado=ACTIVO;
+                item.final=000;
+                strcpy(item.comando,trozos1);
+                insertItemP(item,NULL,P);
+
+            }else if(id==0){
+                if(setpriority(PRIO_PROCESS,id,prio)==-1){
+                    perror("error");
+                }else{            
+                    if(execvp(argv[0], argv)==-1){
+                        perror("error");
+                    }
+                }
+                exit(0);
+            }
+        }else{
+            printf(RED "Ponga un numero valido\n" COLOR_RESET);
         }
     }else{
-        printf(RED "Debe poner el nombre del programa a ejecutar\n" COLOR_RESET);
+        printf(RED "Debe poner el nombre del programa a ejecutar y la prioridad\n" COLOR_RESET);
     }
 }
 void job(cadena trozos[], int n, tListP *P){
@@ -413,16 +429,22 @@ void job(cadena trozos[], int n, tListP *P){
             if(strcmp(trozos[1],"-fg")==0){
                 listjobs(P);
             }else{
+                if(isNumber3(trozos[1])){
                 pid= strtol(trozos[1],NULL,10);
                 listar_item(getItemP(findpid(pid, *P),*P));
+                }
             }
         }else if(n>=3){
-            if(strcmp(trozos[1],"-fg")){
+            if(strcmp(trozos[1],"-fg")==0){
+                if(isNumber3(trozos[2])){
                 pid= strtol(trozos[2],NULL,10);
                 waitpid (pid,NULL,0);
+                }
             }else{
+                if(isNumber3(trozos[1])){
                 pid= strtol(trozos[1],NULL,10);
                 listar_item(getItemP(findpid(pid, *P),*P));
+                }
             }  
         }
     }
@@ -513,6 +535,23 @@ void listjobs(tListP *P){
     actualizar_list(P);
     listar_p(*P);
 }
+void borrarjobs(cadena trozos[], int n, tListP *P){
+    if(n>=2){
+        if(strcmp(trozos[1],"-term")==0){
+            borrartem(P);
+        }else if(strcmp(trozos[1],"-sig")==0){
+            borrarsig(P);
+        }else if(strcmp(trozos[1],"-all")==0){
+            borrartem(P);
+            borrarsig(P);
+        }else if(strcmp(trozos[1],"-clear")==0){
+            deleteListP(P);
+            createEmptyListP(P);
+        }else{
+
+        }
+    }
+}
 //FUNCIONES QUE NOS DAN:
 void MostrarEntorno (char **entorno, char * nombre_entorno){
     int i=0;
@@ -585,13 +624,18 @@ int CambiarUidLogin1 (char * login){
 int CambiarUidLogin2 (char * idlogin){
     uid_t uid;
     char *login;
-    uid=(uid_t) strtol(idlogin,NULL,10);
-    if (strcmp((login=NombreUsuario(uid))," ??????")==0){
-        printf("Usuario no valido: %d\n", uid);
-        return -1;
-    }
-    if (setuid(uid)==-1){
-        printf ("Imposible cambiar credencial: %s\n", strerror(errno));
+    if(isNumber3(idlogin)){
+        uid=(uid_t) strtol(idlogin,NULL,10);
+        if (strcmp((login=NombreUsuario(uid))," ??????")==0){
+            printf("Usuario no valido: %d\n", uid);
+            return -1;
+        }
+        if (setuid(uid)==-1){
+            printf ("Imposible cambiar credencial: %s\n", strerror(errno));
+            return -1;
+        }
+    }else{
+        printf("Introduzca un numero valido\n");
         return -1;
     }
     return 0;
@@ -603,4 +647,17 @@ void obt_hora1(char hora[]){
     time_t now;
     time(&now);
     strcpy(hora,ctime(&now));
+}
+bool isNumber3(cadena param1) {//funcion para comprobar si una cadena es un numero
+    int cnt=0;
+    for(int i=0; i<strlen(param1); i++){
+        if (isdigit(param1[i]))
+            cnt++;
+    }
+    if(cnt == strlen(param1)) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }

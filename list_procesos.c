@@ -287,3 +287,35 @@ void listar_item(tItemP item){
     }
     printf("(%d) %s\n",item.final, item.comando);
 }
+void borrartem(tListP *P){
+    actualizar_list(P);
+    tItemP item;
+    tPosP pos;
+    pos=firstP(*P);
+    while (pos != NULL) {
+        item=getItemP(pos,*P);
+        if(item.estado==TERMINADO && item.final!=Senal1("TERM")){
+            deleteAtPositionP(pos,P);
+            if(pos!=firstP){
+                pos=previousP(pos,*P);
+            }
+        }
+        pos=nextP(pos,*P);
+    }
+}
+void borrarsig(tListP *P){
+    actualizar_list(P);
+    tItemP item;
+    tPosP pos;
+    pos=firstP(*P);
+    while (pos != NULL) {
+        item=getItemP(pos,*P);
+        if(item.estado==TERMINADO && item.final==Senal1("TERM")){
+            deleteAtPositionP(pos,P);
+            if(pos!=firstP){
+                pos=previousP(pos,*P);
+            }
+        }
+        pos=nextP(pos,*P);
+    }
+}

@@ -66,6 +66,7 @@ void backas(cadena trozos[], int n,tListP *P,char cad[]);
 void back1(cadena trozos[], int n,tListP *P,char cad[]);
 void fg1(cadena trozos[], int n);
 void job(cadena trozos[], int n, tListP *P);
+void borrarjobs(cadena trozos[], int n, tListP *P);
 
 //FUNCIONES QUE NOS DAN:
 void MostrarEntorno (char **entorno, char * nombre_entorno);
@@ -78,4 +79,5 @@ int CambiarUidLogin1 (char * login);
 int CambiarUidLogin2 (char * idlogin);
 //FUNCIONES AUXILIARES
 void obt_hora1(char hora[]);
+bool isNumber3(cadena param1);
 #endif
