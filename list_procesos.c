@@ -219,10 +219,12 @@ void actualizar_list(tListP *P) {
         if (id == item.pid) {
             if (WIFEXITED(estado)) {
                 item.estado = TERMINADO;
-                item.final = SIGTERM;
+                item.final = WEXITSTATUS(estado);
+                item.prioridad=-1;
             } else if (WIFSIGNALED(estado)) {
-                item.estado = TERMINADO;
+                item.estado = SIGNAL;
                 item.final = WTERMSIG(estado);
+                item.prioridad=-1;
             } else if (WIFSTOPPED(estado)) {
                 item.estado = PARADO;
                 item.final = WSTOPSIG(estado);
@@ -252,6 +254,8 @@ void listar_p(tListP P){
                 printf("TERMINADO ");
             }else if(item.estado==PARADO){
                 printf("PARADO ");
+            }else if(item.estado==SIGNAL){
+                printf("SIGNAL ");
             }else{
                 printf("ACTIVO ");
             }
@@ -294,7 +298,7 @@ void borrartem(tListP *P){
     pos=firstP(*P);
     while (pos != NULL) {
         item=getItemP(pos,*P);
-        if(item.estado==TERMINADO && item.final!=Senal1("TERM")){
+        if(item.estado==TERMINADO){
             deleteAtPositionP(pos,P);
         }else{
             pos=nextP(pos,*P);
@@ -308,7 +312,7 @@ void borrarsig(tListP *P){
     pos=firstP(*P);
     while (pos != NULL) {
         item=getItemP(pos,*P);
-        if(item.estado==TERMINADO && item.final==Senal1("TERM")){
+        if(item.estado==SIGNAL){
             deleteAtPositionP(pos,P);
         }else{
             pos=nextP(pos,*P);

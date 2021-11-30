@@ -28,10 +28,10 @@
 #define VACIA 0
 #define ERR -1
 #define TERM 1
-#define SIGNAL 2
 #define ACTIVO 0
 #define PARADO 1
 #define TERMINADO 2
+#define SIGNAL 3
 struct SEN{
     char *nombre;
     int senal;
