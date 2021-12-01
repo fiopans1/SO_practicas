@@ -75,4 +75,5 @@ tPosP findpid(int pid, tListP L);
 void listar_item(tItemP item);
 void borrarsig(tListP *P);
 void borrartem(tListP *P);
+tPosP deleteynext(tPosP p, tListP *L,bool borrar);
 #endif

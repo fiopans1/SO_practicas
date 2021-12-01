@@ -299,9 +299,9 @@ void borrartem(tListP *P){
     while (pos != NULL) {
         item=getItemP(pos,*P);
         if(item.estado==TERMINADO){
-            deleteAtPositionP(pos,P);
+            pos=deleteynext(pos,P,true);
         }else{
-            pos=nextP(pos,*P);
+            pos=deleteynext(pos,P,false);
         }
     }
 }
@@ -313,9 +313,35 @@ void borrarsig(tListP *P){
     while (pos != NULL) {
         item=getItemP(pos,*P);
         if(item.estado==SIGNAL){
-            deleteAtPositionP(pos,P);
+            pos=deleteynext(pos,P,true);
         }else{
-            pos=nextP(pos,*P);
+            pos=deleteynext(pos,P,false);
         }
+    }
+}
+tPosP deleteynext(tPosP p, tListP *L,bool borrar){
+    tPosP  q;
+    tPosP  z;
+    if(borrar){
+        if(p==*L) {//borrar 1er elemento
+            *L = (*L)->next;
+            z=(*L)->next;
+        }else if(p->next == LNULL){ //borrar último elemento
+            for(q=*L;q->next!=p;q=q->next);
+            q->next = LNULL;
+            z=q->next;
+            //es lo mismo que hacer q=previous(q,L);
+        }else{//borrar en intermedio
+            q=p->next;
+            p->data = q->data;
+            p->next = q->next;
+            z=p;
+            p=q;
+        }
+        //liberaramos la variable
+        free(p);
+        return z;
+    }else{
+        return p->next;        
     }
 }
