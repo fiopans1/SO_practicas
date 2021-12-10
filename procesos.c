@@ -148,8 +148,7 @@ void cambiarvar(cadena trozos[], int n, char *env[]){
                     printf(RED "No se pudo cambiar la varible\n" COLOR_RESET);
                 }else{
                     printf("Se cambió el valor de %s a %s a través de putenv\n",trozos[2], trozos[3]);
-                }
-                free(aux);
+                }   
             }
         }
     }
@@ -490,7 +489,7 @@ void fgas(cadena trozos[], int n){//funcion para segundo plano
             exit(0);
         }
     }else{
-        printf(RED "Debe poner el nombre del programa a ejecutar y el login\\n" COLOR_RESET);
+        printf(RED "Debe poner el nombre del programa a ejecutar y el login\n" COLOR_RESET);
     }
 }
 void backas(cadena trozos[], int n,tListP *P,char cad[]){//funcion para segundo plano
@@ -579,15 +578,16 @@ int BuscarVariable (char * var, char *e[]){
 int CambiarVariable(char * var, char * valor, char *e[]){
     int pos;
     char *aux;
-    if ((pos=BuscarVariable(var,e))==-1)
+    if ((pos=BuscarVariable(var,e))==-1){
         return(-1);
-    if ((aux=(char *)malloc(strlen(var)+strlen(valor)+2))==NULL)
+    }
+    if ((aux=(char *)malloc(strlen(var)+strlen(valor)+2))==NULL){
         return -1;
+    }
     strcpy(aux,var);
     strcat(aux,"=");
     strcat(aux,valor);
     e[pos]=aux;
-    free(aux);
     return (pos);
 
 }

@@ -324,8 +324,12 @@ tPosP deleteynext(tPosP p, tListP *L,bool borrar){
     tPosP  z;
     if(borrar){
         if(p==*L) {//borrar 1er elemento
-            *L = (*L)->next;
-            z=(*L)->next;
+                *L = (*L)->next;
+                if(*L==NULL){
+                    z=NULL;
+                }else{
+                    z=*L;
+                }
         }else if(p->next == LNULL){ //borrar último elemento
             for(q=*L;q->next!=p;q=q->next);
             q->next = LNULL;

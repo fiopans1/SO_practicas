@@ -481,7 +481,9 @@ void ayuda(cadena param1, int n){                  //AYUDA
 
        printf("->'ayuda [cmd]' donde cmd es uno de los siguientes comandos:\n- fin\t\t- salir\n- bye\t\t- carpeta\n- pid\t\t- autores\n- hist\t\t- comando\n- fecha\t\t- infosis\n");
         printf("- ayuda\t\t- crear\n- borrar\t- borrarrec\n- listfich\t- listdir\n");
-       printf("- malloc\t- mmap\n- shared\t- dealloc\n- memoria\t- volcarmem\n- llenarmem\t- recursiva\n- e-s\n");
+       printf("- malloc\t- mmap\n- shared\t- dealloc\n- memoria\t- volcarmem\n- llenarmem\t- recursiva\n- e-s\t\t- fgas\n");
+       printf("- priority\t- rederr\n- uid\t\t- entorno\n- mostrarvar\t- cambiarvar\n- fork\t\t- ejec\n- ejecpri\t- job\n");
+       printf("- fg\t\t- fgpri\n- back\t\t- backpri\n- fgas\t\t- backas\n- listjobs\t- borrarjobs\n");
 
 
     }else if(n==2){//ayuda especifico
@@ -532,6 +534,44 @@ void ayuda(cadena param1, int n){                  //AYUDA
             printf("recursiva [n] 	Invoca a la funcion recursiva n veces\n");
         }else if(strcmp(param1,"e-s")==0){
             printf("e-s [read|write] [-o] fiche addr cont 	Invoca a la funcion recursiva n veces\n");
+        }else if(strcmp(param1,"priority")==0){
+            printf("priority [pid] [valor] 	Muestra o cambia la prioridad del proceso pid a valor\n");
+        }else if(strcmp(param1,"rederr")==0){
+            printf("rederr [-reset] fich 	Redirecciona el error estándar del shell\n");
+        }else if(strcmp(param1,"uid")==0){
+            printf("uid [-get|-set] [-l] [id] 	 Muestra o cambia (si puede) la credencial del proceso que ejecuta el shell\n");
+        }else if(strcmp(param1,"entorno")==0){
+            printf("entorno [-environ|-addr] 	 Muestra el entorno del proceso\n");
+        }else if(strcmp(param1,"mostrarvar")==0){
+            printf("mostrarvar 	 Muestra el valor y las direcciones de una variable de entorno\n");
+        }else if(strcmp(param1,"cambiarvar")==0){
+            printf("cambiarvar [-a|-e|-p] var valor	Cambia el valor de una variable de entorno\n");
+        }else if(strcmp(param1,"fork")==0){
+            printf("fork 	Hace una llamada fork para crear un proceso\n");
+        }else if(strcmp(param1,"ejec")==0){
+            printf("ejec prog args....	Ejecuta, sin crear proceso,prog con argumentos\n");
+        }else if(strcmp(param1,"ejecpri")==0){
+            printf("ejecpri prio prog args....	Ejecuta, sin crear proceso, prog con argumentos con la prioridad cambiada a prio\n");
+        }else if(strcmp(param1,"fg")==0){
+            printf("fg prog args...	Crea un proceso que ejecuta en primer plano prog con argumentos\n");
+        }else if(strcmp(param1,"fgpri")==0){
+            printf("fgpri prio prog args...	Crea un proceso que ejecuta en primer plano prog con argumentos  con la prioridad cambiada a prio\n");
+        }else if(strcmp(param1,"back")==0){
+            printf("back prog args...	Crea un proceso que ejecuta en segundo plano prog con argumentos\n");
+        }else if(strcmp(param1,"backpri")==0){
+            printf("backpri prio prog args...	Crea un proceso que ejecuta en segundo plano prog con argumentos con la prioridad cambiada a prio\n");
+        }else if(strcmp(param1,"fgas")==0){
+            printf("fgas us prog args...	Crea un proceso que ejecuta en primer plano, y como el usuario us, prog con argumentos\n");
+        }else if(strcmp(param1,"backas")==0){
+            printf("backas us prog args...	Crea un proceso que ejecuta en segundo plano, y como el usuario us, prog con argumentos\n");
+        }else if(strcmp(param1,"listjobs")==0){
+            printf("listjobs 	Lista los procesos en segundo plano\n");
+        }else if(strcmp(param1,"borrarjobs")==0){
+            printf("borrarjobs [-term][-sig]	Elimina los propcesos terminados o terminados por senal de la lista de procesos en s.p.\n");
+        }else if(strcmp(param1,"job")==0){
+            printf("job [-fg] pid	Muestra informacion del proceso pid. -fg lo pasa a primer plano\n");
+        }else if(strcmp(param1,"fgas")==0){
+            printf("fgas us prog args...	Crea un proceso que ejecuta en primer plano, y como el usuario us, prog con argumentos\n");
         }else{
             printf(RED "This command doesn't exist\n" COLOR_RESET);
         }
